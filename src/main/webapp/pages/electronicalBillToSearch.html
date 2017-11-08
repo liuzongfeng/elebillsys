@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Bootstrap, from Twitter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="../bootstrap/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+    </style>
+   <link href="../bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="../bootstrap/css/datetimepicker.css" rel="stylesheet">
+ </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">对账账单查询</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+              Logged in as <a href="#" class="navbar-link">Username</a>
+            </p>
+            <ul class="nav">
+              <li class="active"><a href="index.html">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              
+              <li class="nav-header">商务人员</li>
+              <li ><a href="electronicalBillIssue.html">账单期数管理</a></li>
+              <li><a href="electronicalBillMonthManage.html">月度账单管理</a></li>
+              <li><a href="electronicalBillMonthSearch.html">月度账单查询</a></li>
+              <li><a href="electronicalBillDetail.html">月度账单明细</a></li>
+              
+              <li class="nav-header">对账渠道</li>
+              <li><a href="electronicalBillForOther.html">对账账单管理</a></li>
+              <li><a href="electronicalBillToCheck.html">对账账单核对</a></li>
+              <li class="active"><a href="electronicalBillToSearch.html">对账账单查询</a></li>
+              <li><a href="electronicalBillOtherDetail.html">对账账单明细</a></li>
+              
+              <li class="nav-header">商务结算专员</li>
+              <li><a href="electronicalBillTempManage.html">临时账单管理</a></li>
+              <li><a href="electronicalBillTempEdit.html">临时账单编制</a></li>
+              <li><a href="electronicalBillTempDetail.html">临时账单明细</a></li>
+              
+              <li><a href="#"></a></li>
+              <li><a href="#"></a></li>
+            </ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+        <!-- 添加账单期数的操作内容 -->
+        <div class="span9">
+          <!-- 查询区 -->
+         <!-- <div style="padding: 10px 10px 10px;">
+		    <form class="bs-example bs-example-form" role="form">
+		    
+		        <div class="input-group ">
+		            <span class="input-group-addon">对账对象</span>
+		            <input id="input1" type="text" class="form-control" />
+		            
+		            <span class="input-group-addon">订单编号</span>
+		            <input id="input2" type="text" class="form-control" />
+		            
+		            <span class="input-group-addon">部门</span>
+		            <input id="input3" type="text" class="form-control" />
+		        </div>
+		        <br/>
+		        <div class="input-group">
+		            <span class="input-group-addon">业务人员</span>
+		            <input id="input4" type="text" class="form-control"/>
+		            
+		             <span class="input-group-addon">账单状态</span>
+		            <select class="form-control">
+				      <option>1</option>
+				      <option>2</option>
+				      <option>3</option>
+				      <option>4</option>
+				      <option>5</option>
+				    </select>
+
+		        </div>
+		      
+		    </form>
+		</div> -->
+          	 <!-- 按钮区 -->
+        <div style="float:right;margin-right:40px;padding-top:10px;">  
+		
+		<button type="button" class="btn btn-warning">下载数据</button>&nbsp;&nbsp;
+		<button type="button" class="btn btn-primary" onclick="printBill_fn();">打印账单</button>&nbsp;&nbsp;
+		<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#myModal">上传</button>&nbsp;&nbsp;
+		<button type="button" class="btn btn-danger">查看扫描件</button><br>
+		</div>
+          <!-- 列表展示区 -->
+          <div style="margin-top:100px;">
+          	<div class="panel-group" id="accordion">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" 
+							   href="#collapseOne">
+								应收信息
+							</a>
+						</h4>
+					</div>
+					<div id="collapseOne" class="panel-collapse collapse in">
+						<div class="panel-body">
+							<table class="table table-bordered">
+							  <caption></caption>
+							  <thead>
+							    <tr>
+							      <th>账单状态</th>
+							     
+							      <th>业务员</th>
+							      <th>销售订单编号</th>
+							      <th>客户</th>
+							      <th>订单日期</th>
+							      <th>订单金额</th>
+							      <th>未结账款</th>
+							      <th>对账核实备注</th>
+							      <th>操作</th>
+							    </tr>
+							  </thead>
+							  <tbody>
+							    <tr>
+							      <td>Tanmay</td>
+							    
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td><a href="electronicalBillOtherDetail.html">查询明细</a></td>
+							      
+							    </tr>
+							    <tr>
+							      <td>Tanmay</td>
+							    
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Bangalore</td>
+							     
+							    </tr>
+							    <tr>
+							      <td>Tanmay</td>
+							     
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							       <td>560001</td>
+							      <td>Bangalore</td>
+							    
+							    </tr>
+							    <!-- 合计 行 -->
+							    <tr>
+							     
+							      <td colspan="6" style="text-align: right;">合计</td>
+							      <td colspan="3">10000000.00</td>
+							      
+							    
+							    </tr>
+							  </tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<a data-toggle="collapse" data-parent="#accordion" 
+								   href="#collapseTwo">
+									留返利往来信息
+								</a>
+							</h4>
+						</div>
+						<div id="collapseTwo" class="panel-collapse collapse in">
+							<div class="panel-body">
+								<table class="table table-bordered">
+							  <caption></caption>
+							  <thead>
+							    <tr>
+							      <th>账单状态</th>
+							     
+							      <th>上月结余</th>
+							      <th>销售订单编号</th>
+							      <th>摘要</th>
+							      <th>日期</th>
+							      <th>留返利通知单号</th>
+							      <th>留返利金额</th>
+							      <th>留返利销账金额</th>
+							      <th>对账核实备注</th>
+							    </tr>
+							  </thead>
+							  <tbody>
+							    <tr>
+							      <td>Tanmay</td>
+							     
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Bangalore</td>
+							      
+							    </tr>
+							    <tr>
+							      <td>Tanmay</td>
+							   
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Bangalore</td>
+							     
+							    </tr>
+							    <tr>
+							      <td>Tanmay</td>
+							      
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Bangalore</td>
+							    
+							    </tr>
+							    <!-- 合计 行 -->
+							    <tr>
+							     
+							      <td colspan="6" style="text-align: right;">期末余额合计</td>
+							      <td colspan="3">10000000.00</td>
+							      
+							    
+							    </tr>
+							  </tbody>
+							</table>
+							</div>
+						</div>
+					</div>
+					
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<a data-toggle="collapse" data-parent="#accordion" 
+								   href="#collapseThree">
+									资金占用费、提前回款奖励明细
+								</a>
+							</h4>
+						</div>
+						<div id="collapseThree" class="panel-collapse collapse in">
+							<div class="panel-body">
+								<table class="table table-bordered">
+							  <caption></caption>
+							  <thead>
+							    <tr>
+							      <th>账单状态</th>
+							     
+							      <th>回款单号</th>
+							      <th>销售订单编号</th>
+							      <th>回款金额</th>
+							      <th>回款日期</th>
+							      <th>账期起点日期</th>
+							      <th>账期</th>
+							      <th>资金占用费</th>
+							      <th>对账核实备注</th>
+							    </tr>
+							  </thead>
+							  <tbody>
+							    <tr>
+							      <td>Tanmay</td>
+							      
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Bangalore</td>
+							      
+							    </tr>
+							    <tr>
+							      <td>Tanmay</td>
+							    
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Bangalore</td>
+							     
+							    </tr>
+							    <tr>
+							      <td>Tanmay</td>
+							    
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Bangalore</td>
+							    
+							    </tr>
+							    <!-- 合计 行 -->
+							    <tr>
+							     
+							      <td colspan="7" style="text-align: right;">合计</td>
+							      <td colspan="2">10000000.00</td>
+							      
+							    
+							    </tr>
+							  </tbody>
+							</table>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<a data-toggle="collapse" data-parent="#accordion" 
+								   href="#collapseFour">
+									预收款/履约保证金
+								</a>
+							</h4>
+						</div>
+						<div id="collapseFour" class="panel-collapse collapse in">
+							<div class="panel-body">
+								<table class="table table-bordered">
+							  <caption></caption>
+							  <thead>
+							    <tr>
+							      <th>账单状态</th>
+							      
+							      <th>业务员</th>
+							      <th>收款单号</th>
+							      <th>客户</th>
+							      <th>收款日期</th>
+							      <th>汇率</th>
+							      <th>未核销金额</th>
+							      <th>摘要</th>
+							      <th>对账核实备注</th>
+							    </tr>
+							  </thead>
+							  <tbody>
+							    <tr>
+							      <td>Tanmay</td>
+							      
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Bangalore</td>
+							      
+							    </tr>
+							    <tr>
+							      <td>Tanmay</td>
+							     
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Bangalore</td>
+							     
+							    </tr>
+							    <tr>
+							      <td>Tanmay</td>
+							   
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>560001</td>
+							      <td>Bangalore</td>
+							    
+							    </tr>
+							    <!-- 合计 行 -->
+							    <tr>
+							     
+							      <td colspan="6" style="text-align: right;">合计</td>
+							      <td colspan="3">10000000.00</td>
+							      
+							    
+							    </tr>
+							  </tbody>
+							</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+          	 
+		
+		
+		<div class="pagination" style="margin-top:30px;margin-right:30px;float:right;">
+		  <ul>
+		    <li><a href="#">Prev</a></li>
+		    <li><a href="#">1</a></li>
+		    <li><a href="#">2</a></li>
+		    <li><a href="#">3</a></li>
+		    <li><a href="#">4</a></li>
+		    <li><a href="#">5</a></li>
+		    <li><a href="#">Next</a></li>
+		  </ul>
+		</div>
+          
+          <!-- 模态框 -->
+          <!-- 模态框（Modal） -->
+		
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							&times;
+						</button>
+						<h4 class="modal-title" id="myModalLabel">
+							模态框（Modal）标题
+						</h4>
+					</div>
+					<div class="modal-body" >
+						
+						<div class="bs-docs-example" id="uploadpriceForm">
+			  <form id="uploadexcel" align="center"  action="#" method="post" enctype="multipart/form-data">
+					<h5 id="meg"></h5>
+					
+					 <div class="control-group">
+					    <label class="control-label" for="inputPassword"></label>
+					    <div class="controls">
+					     <input class="startDate" size="16" type="text" placeholder="2017-01-01"/>至<input class="startDate" size="16" type="text" placeholder="2017-03-31" />
+					    </div>
+					 </div>
+					
+					
+				
+					
+					<input id="lefile" type="file" name="preSaleBasicInfoForm.oldRecordFile" style="display: none;">
+					 
+						<div class="input-append" style="margin-top:30px;">
+							<input id="photoCover" type="text" class="input-large">
+							<a class="btn btn-success" onclick="uploadFileForm_fn();"><i class="icon-white icon-folder-open"></i> 选择文件</a>
+						
+						</div>
+			  
+			 
+			  </form>
+		  </div>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+						</button>
+						<button type="button" class="btn btn-primary">
+							提交更改
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+        </div><!--/span-->
+        
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; mis组  2017</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+     <script src="../js/jquery-3.2.1.min.js"></script>
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+    <script src="../bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+     <script src="../bootstrap/js/bootstrap-datetimepicker.fr.js"></script>
+    <script src="../bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script type="text/javascript">
+    
+    var printBill_fn = function(){
+    	window.location.href = "electronicalBillToPrint.html";
+    }
+    
+    //处理上传文件控件样式
+    var uploadFileForm_fn = function(){
+    	 $('input[id=lefile]').click();
+    	 var i =0;
+    	 var aaa = window.setInterval(function(){
+    		 var fileValue = document.getElementById("lefile").value ;
+    		 if(null != fileValue){
+    			//将输入框值添加到控件
+              	$('#photoCover').val(fileValue);
+    			i = i+1;
+    		 }
+    	 },"500");
+    	 
+    	if(i == 1){
+    		window.clearInterval(aaa);
+    	}
+    }
+   
+    	 $('.startDate').datetimepicker({  
+    	    	                format : 'yyyy-mm-dd',  
+    	    	                weekStart : 1,  
+    	    	                todayBtn : 1,  
+    	    	                autoclose : 1,  
+    	    	                todayHighlight : 1,  
+    	    	                startView : 2,  
+    	    	                forceParse : 0,  
+    	    	                showMeridian : 1,  
+    	    	                language: 'zh-CN',//汉化  
+    	    	                minView: "month" //选择日期后，不会再跳转去选择时分秒   
+    	    	            }); 
+    
+   
+    </script>
+    
+  </body>
+</html>

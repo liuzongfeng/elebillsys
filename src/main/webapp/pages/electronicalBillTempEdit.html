@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Bootstrap, from Twitter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="../bootstrap/css/bootstrap.css" rel="stylesheet">
+  
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+      
+     
+      
+    </style>
+    
+    <link href="../bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+     <link href="../css/cssself.css" rel="stylesheet">
+ </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">编制临时账单</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+              Logged in as <a href="#" class="navbar-link">Username</a>
+            </p>
+            <ul class="nav">
+              <li class="active"><a href="index.html">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              
+              <li class="nav-header">商务人员</li>
+              <li><a href="electronicalBillIssue.html">账单期数管理</a></li>
+              <li><a href="electronicalBillMonthManage.html">月度账单管理</a></li>
+              <li><a href="electronicalBillMonthSearch.html">月度账单查询</a></li>
+              <li><a href="electronicalBillDetail.html">月度账单明细</a></li>
+              
+              <li class="nav-header">对账渠道</li>
+              <li><a href="electronicalBillForOther.html">对账账单管理</a></li>
+              <li><a href="electronicalBillToCheck.html">对账账单核对</a></li>
+              <li><a href="electronicalBillToSearch.html">对账账单查询</a></li>
+              <li><a href="electronicalBillOtherDetail.html">对账账单明细</a></li>
+              
+              <li class="nav-header">商务结算专员</li>
+              <li><a href="electronicalBillTempManage.html">临时账单管理</a></li>
+              <li class="active"><a href="electronicalBillTempEdit.html">临时账单编制</a></li>
+              <li><a href="electronicalBillOtherDetail.html">临时账单明细</a></li>
+              
+              <li><a href="#"></a></li>
+              <li><a href="#"></a></li>
+            </ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+        <!-- 添加账单期数的操作内容 -->
+        <div class="span9">
+          <!-- 查询区 -->
+         <div style="padding: 10px 10px 10px;">
+		    <form class="bs-example bs-example-form" role="form">
+		        <div class="input-group">
+		            <span class="input-group-addon">销售订单编号</span>
+		            <input id="input4" type="text" class="form-control"/>
+		            
+		            <span class="input-group-addon">客户</span>
+		            <input id="input3" type="text" class="form-control" />&nbsp;&nbsp;&nbsp;&nbsp;
+		            
+		            <button type="button" class="btn btn-primary" style="margin-top:-9px;">搜索</button>
+		        </div>
+		    </form>
+		</div>
+		<hr style="border: 1px solid #000000; " color="#000000" size="1">
+		<div>
+		    <form class="bs-example bs-example-form" role="form">
+		        <div class="input-group">
+		            <span class="input-group-addon">函件编号</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		            <input id="input5" type="text" class="form-control"/>
+		            <br/>
+		            <span class="input-group-addon">函件接收单位</span>
+		            <input id="input6" type="text" class="form-control" />
+		            
+		           
+		        </div>
+		    </form>
+		    <div style="float:right;margin-right:380px;margin-top:-60px;">  
+		
+		<button type="button" class="btn btn-warning" onclick="editTempBill_fn();">生成单一合同账单款确认函</button>&nbsp;&nbsp;
+		<button type="button" class="btn btn-danger" onclick="editTempBillMulti_fn();">生成多合同账单款确认函</button><br>
+		</div>
+		</div>
+          	 <!-- 按钮区 -->
+         
+		
+          <!-- 列表展示区 -->
+          <div style="margin-top:100px;">
+          	<div class="panel-group" id="accordion">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" 
+							   href="#collapseOne">
+								
+							</a>
+						</h4>
+					</div>
+					<div id="collapseOne" class="panel-collapse collapse in">
+						<div class="panel-body">
+							<table class="table table-bordered">
+							  <caption></caption>
+							  <thead>
+							    <tr>
+							      <th>选择</th>
+							      <th>销售订单编号</th>
+							      <th>客户方单位</th>
+							      <th>合同生效日期</th>
+							      <th>合同金额</th>
+							      <th>累计回款</th>
+							      <th>履约质保</th>
+							      <th>未结账款</th>
+							      <th>已开发票金额</th>
+							      <th>操作</th>
+							    </tr>
+							  </thead>
+							  <tbody>
+							    <tr>
+							      <td><input type="checkbox"/> </td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>
+							      		111111111111
+							      </td>
+							      <td>Tanmay</td>
+							      	<td>
+							      		222222
+							      </td>
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>2000</td>
+							     
+							      <td><a href="electronicalBillTempDetail.html">查看明细</a></td>
+							    </tr>
+							     <tr>
+							      <td><input type="checkbox"/> </td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>
+							      		111111111111
+							      </td>
+							      <td>Tanmay</td>
+							      	<td>
+							      		222222
+							      </td>
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>2000</td>
+							     
+							      <td>查看</td>
+							    </tr>
+							     <tr>
+							      <td><input type="checkbox"/> </td>
+							      <td>Tanmay</td>
+							      <td>Bangalore</td>
+							      <td>
+							      		111111111111
+							      </td>
+							      <td>Tanmay</td>
+							      	<td>
+							      		222222
+							      </td>
+							      <td>560001</td>
+							      <td>Tanmay</td>
+							      <td>1000</td>
+							     
+							      <td>查看</td>
+							    </tr>
+							  </tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+					
+					
+					
+					
+				</div>
+			</div>
+          	 <!-- <div class="table-responsive" >
+				<table class="table" style="margin-top:150px;">
+					<caption>注：期数状态：未发布、发布、已关闭</caption>
+					<thead>
+						<tr>
+						    <th>复选框</th>
+							<th>期数名称</th>
+							<th>开始日期</th>
+							<th>结束日期</th>
+							<th>期数状态</th>
+							<th>账单查询</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+						    <th></th>
+							<td>产品1</td>
+							<td>23/11/2013</td>
+							<td>待发货</td>
+							<td>待发货</td>
+							<th>账单查询</th>
+						</tr>
+						<tr>
+						    <th></th>
+							<td>产品2</td>
+							<td>10/11/2013</td>
+							<td>发货中</td>
+							<td>待发货</td>
+							<th>账单查询</th>
+						</tr>
+						<tr>
+						    <th></th>
+							<td>产品3</td>
+							<td>20/10/2013</td>
+							<td>待确认</td>
+							<td>待发货</td>
+							<th>账单查询</th>
+						</tr>
+						<tr>
+						    <th></th>
+							<td>产品4</td>
+							<td>20/10/2013</td>
+							<td>已退货</td>
+							<td>待发货</td>
+							<th>账单查询</th>
+						</tr>
+					</tbody>
+			</table>
+			
+		</div> -->
+		
+		
+		<div class="pagination" style="margin-top:30px;margin-right:30px;float:right;">
+		  <ul>
+		    <li><a href="#">Prev</a></li>
+		    <li><a href="#">1</a></li>
+		    <li><a href="#">2</a></li>
+		    <li><a href="#">3</a></li>
+		    <li><a href="#">4</a></li>
+		    <li><a href="#">5</a></li>
+		    <li><a href="#">Next</a></li>
+		  </ul>
+		</div>
+          
+          <!-- 模态框 -->
+          <!-- 模态框（Modal） -->
+		
+		<div style="display: none;"  class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+			<div class="modal-dialog">
+				<div class="modal-content" >
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							&times;
+						</button>
+						<h4 class="modal-title" id="myModalLabel">
+							模态框（Modal）标题
+						</h4>
+					</div>
+					<div class="modal-body" >
+						
+						<form class="form-horizontal">
+						  <div class="control-group">
+						    <label class="control-label" for="inputEmail">期数名称</label>
+						    <div class="controls">
+						      <input type="text" id="inputEmail" placeholder="Email">
+						    </div>
+						  </div>
+						  <div class="control-group">
+						    <label class="control-label" for="inputPassword">开始时间</label>
+						    <div class="controls">
+						      <input type="password" id="inputPassword" placeholder="Password">
+						    </div>
+						  </div>
+						  <div class="control-group
+						    <label class="control-label" for="inputEmail1">截止时间</label>
+						    <div class="controls">
+						      <input type="text" id="inputEmail1" placeholder="Email">
+						    </div>
+						  </div>
+						  <div class="control-group">
+						    <label class="control-label" for="inputPassword1">状态</label>
+						    <div class="controls">
+						      <input type="password" id="inputPassword1" placeholder="Password">
+						    </div>
+						  </div>
+						  
+						</form>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+						</button>
+						<button type="button" class="btn btn-primary">
+							提交更改
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+        </div><!--/span-->
+        
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; mis组  2017</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../js/jquery-3.2.1.min.js"></script>
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+   
+   
+    	var editTempBill_fn = function() {
+			window.location.href = "electronicalBillToConfirm.html";
+    	}
+    	
+    	var editTempBillMulti_fn = function(){
+    		window.location.href = "electronicalBillToMultiConfirm.html";
+    	}
+
+    </script>
+    
+  </body>
+</html>

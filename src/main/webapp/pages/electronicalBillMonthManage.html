@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Bootstrap, from Twitter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="../bootstrap/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+    </style>
+    <link href="../bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="../bootstrap/css/datetimepicker.css" rel="stylesheet">
+ </head>
+  <body>
+  <div id="manageId">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">月度账单管理</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+              Logged in as <a href="#" class="navbar-link">Username</a>
+            </p>
+            <ul class="nav">
+              <li class="active"><a href="index.html">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              
+              <li class="nav-header">商务人员</li>
+              <li><a href="electronicalBillIssue.html">账单期数管理</a></li>
+              <li class="active"><a href="electronicalBillMonthManage.html">月度账单管理</a></li>
+              <li><a href="electronicalBillMonthSearch.html">月度账单查询</a></li>
+              <li><a href="electronicalBillDetail.html">月度账单明细</a></li>
+              
+              <li class="nav-header">对账渠道</li>
+              <li><a href="electronicalBillForOther.html">对账账单管理</a></li>
+              <li><a href="electronicalBillToCheck.html">对账账单核对</a></li>
+              <li><a href="electronicalBillToSearch.html">对账账单查询</a></li>
+              <li><a href="electronicalBillOtherDetail.html">对账账单明细</a></li>
+              
+              <li class="nav-header">商务结算人员</li>
+              <li><a href="electronicalBillTempManage.html">临时账单管理</a></li>
+              <li><a href="electronicalBillTempEdit.html">临时账单编制</a></li>
+              <li><a href="electronicalBillTempDetail.html">临时账单明细</a></li>
+              
+              <li><a href="#"></a></li>
+              <li><a href="#"></a></li>
+            </ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+        <!-- 添加账单期数的操作内容 -->
+        <div class="span9">
+          
+        
+          	
+          <!-- 列表展示区 -->
+          	 <div class="table-responsive" >
+				<table class="table" style="margin-top:30px;">
+					<caption></caption>
+					<thead>
+						<tr>
+						    
+							<th><h3>数据表</h3><h4>请上传{{issueName}}期账单基础数据</h4></th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+						    
+							<td>对账导出_应收净额表</td>
+							<td><button class="btn" type="button" data-toggle="modal" data-target="#uploadAccountLimit">上传</button></td>
+						</tr>
+						<tr>
+						    
+							<td>对账导出_销售业务统计总表</td>
+							<td><button class="btn" type="button">上传</button></td>
+						</tr>
+						<tr>
+						    
+							<td>对账导出_留返利往来清单</td>
+							<td><button class="btn" type="button">上传</button></td>
+						</tr>
+						<tr>
+							<td>对账导出_未核销的留返利</td>
+							<td><button class="btn" type="button">上传</button></td>
+						</tr>
+						<tr>
+							<td>预收表</td>
+							<td><button class="btn" type="button">上传</button></td>
+						</tr>
+						<tr>
+							<td>对账导出_资金占用费计算表</td>
+							<td><button class="btn" type="button">上传</button></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+						</tr>
+					</tbody>
+			</table>
+			
+		</div>
+          
+          <!-- 模态框 -->
+         <!--上传文件model-->
+	<div id="uploadAccountLimit" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel">上传应收净额表</h3>
+	  </div>
+	  <div class="modal-body">
+		  <div class="bs-docs-example" id="uploadpriceForm">
+			  <form id="uploadexcel" align="center"  action="#" method="post" enctype="multipart/form-data">
+					<h5 id="meg"></h5>
+					
+					 <div class="control-group">
+					    <label class="control-label" for="inputPassword"></label>
+					    <div class="controls">
+					     <input class="startDate" size="16" type="text" placeholder="2017-01-01" v-model="issueStartDate" readonly="readonly"/>至
+					     <input class="startDate" size="16" type="text" placeholder="2017-03-31" v-model="issueEndDate" readonly="readonly"/>
+					    </div>
+					 </div>
+					
+					
+				
+					
+					<input id="lefile" type="file" name="upfile" style="display: none;">
+					 
+						<div class="input-append" style="margin-top:30px;">
+							<input id="photoCover" type="text" class="input-large">
+							<a class="btn btn-success" @click="uploadFileForm_fn"><i class="icon-white icon-folder-open"></i> 选择文件</a>
+						
+						</div>
+			  
+			 
+			  </form>
+		  </div>
+	  </div>
+	  <div class="modal-footer" id="message_buttons">
+		<button id="upload_btn" class="btn btn-primary" @click="uploadFile_fn">上传</button>
+		<button id="message_button_no" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">关闭</button>
+	  </div>
+	</div>
+        </div><!--/span-->
+        
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; mis组  2017</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+</div>
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+     <script type="text/javascript" src="../js/basePath.js"></script>
+    <script src="../js/jquery-3.2.1.min.js"></script>
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+    <script src="../bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+     <script src="../bootstrap/js/bootstrap-datetimepicker.fr.js"></script>
+    <script src="../bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script type="text/javascript" src="../js/vue.js"></script>
+    <script type="text/javascript" src="../js/moment.js"></script>
+    <script type="text/javascript" src="../js/axios.min.js"></script>
+    <script type="text/javascript">
+    
+    window.onload = function(){
+    	var data_manage = {
+    			issueName : "",
+    			issueId : null,
+    			issueStartDate : null,
+    			issueEndDate : null,
+    			issueObjId : null
+    			
+    			
+    	}
+    	
+    	var manageVm = new Vue({
+    		el : "#manageId",
+    		data : data_manage,
+    		methods : {
+    			
+    			//文件上传
+    			uploadFile_fn : function(){
+    				//数据
+    				var formdata = new FormData($("#uploadexcel")[0]);
+    				formdata.append('upfile',$("#uploadexcel")[0]);
+    				formdata.append('issueStartDate',manageVm.issueStartDate);
+    				formdata.append('issueEndDate',manageVm.issueEndDate);
+    				formdata.append('issueObjId',manageVm.issueObjId);
+    				
+    				
+    				//请求
+    				axios({
+    					url : base_path+'/miselebill/uploadBillFile',
+    					method : 'post',
+    					data : formdata,
+    					headers : {'Content-Type' : 'multipart/form-data'}
+    					
+    				}).then(function(response){
+    					
+    				}) 
+    			},
+    			
+    			//处理上传文件控件样式
+    			uploadFileForm_fn : function(){
+			    	 $('input[id=lefile]').click();
+			    	 var i =0;
+			    	 var aaa = window.setInterval(function(){
+			    		 var fileValue = document.getElementById("lefile").value ;
+			    		 if(null != fileValue){
+			    			//将输入框值添加到控件
+			              	$('#photoCover').val(fileValue);
+			    			i = i+1;
+			    		 }
+			    	 },"500");
+			    	 
+			    	if(i == 1){
+			    		window.clearInterval(aaa);
+			    	}
+			    } 
+    		},
+    		//过滤器
+      	  	filters:{
+      	  		
+      	  	},
+			created : function(){
+      	  		
+      	  	},
+			updated : function(){
+				
+			    	
+      	  	}
+    	});
+    	/* //
+    	$('.startDate').datetimepicker({  
+	    	                format : 'yyyy-mm-dd',  
+	    	                weekStart : 1,  
+	    	                todayBtn : 1,  
+	    	                autoclose : 1,  
+	    	                todayHighlight : 1,  
+	    	                startView : 2,  
+	    	                forceParse : 0,  
+	    	                showMeridian : 1,  
+	    	                language: 'zh-CN',//汉化  
+	    	                minView: "month" //选择日期后，不会再跳转去选择时分秒   
+	    	            }); */
+    	
+    	//获得未发布的期数
+    	var obtainIssueOne = function(){
+    		axios.get( base_path+'/miselebill/searchEbIssue')
+    		      .then(function(response){
+    		    	  manageVm.issueObjId = response.data.id;
+    		    	  manageVm.issueName =  response.data.issueName;
+    		    	  manageVm.issueStartDate = moment(new Date(response.data.issueStartDate)).format("YYYY-MM-DD") ;
+    		    	  manageVm.issueEndDate = moment(new Date(response.data.issueEndDate)).format("YYYY-MM-DD") ;
+    		      })
+    		      .catch(function(error){
+    		    	  
+    		      })
+    	};
+    	obtainIssueOne();
+    	
+    }
+    
+    
+    
+   
+    </script>
+    
+  </body>
+</html>

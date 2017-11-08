@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Bootstrap, from Twitter</title>
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta http-equiv="Access-Control-Allow-Headers" content="Authorization,Origin, X-Requested-With, Content-Type, Accept">
+    <meta http-equiv="Access-Control-Allow-Methods" content="GET,POST">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="../bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="../css/cssself.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+    </style>
+    <link href="../bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="../bootstrap/css/datetimepicker.css" rel="stylesheet">
+    
+    <script type="text/javascript" src="../js/lodash.js"></script>
+    <script type="text/javascript" src="../js/basePath.js"></script>
+    <script src="../js/jquery-3.2.1.min.js"></script>
+    <script src="../bootstrap/js/bootstrap.js"></script>
+    <script src="../bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="../bootstrap/js/bootstrap-datetimepicker.fr.js"></script>
+    <script src="../bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+    <!-- <script src="../js/popper.min.js"></script> -->
+    <script type="text/javascript" src="../js/vue.js"></script>
+    <!-- <script type="text/javascript" src="../js/vue-strap.min.js"></script> -->
+    <script type="text/javascript" src="../js/moment.js"></script>
+    <script type="text/javascript" src="../js/axios.min.js"></script>
+ </head>
+  <body >
+  <div id="testVue_id">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">账单期数管理</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+              Logged in as <a href="#" class="navbar-link">Username</a>
+            </p>
+            <ul class="nav">
+              <li class="active"><a href="index.html">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              
+              <li class="nav-header">商务人员</li>
+              <li class="active"><a href="electronicalBillIssue.html">账单期数管理</a></li>
+              <li><a href="electronicalBillMonthManage.html">月度账单管理</a></li>
+              <li><a href="electronicalBillMonthSearch.html">查询月度账单</a></li>
+              <li><a href="electronicalBillDetail.html">月度账单明细</a></li>
+              
+              <li class="nav-header">对账渠道</li>
+              <li><a href="electronicalBillForOther.html">对账账单管理</a></li>
+              <li><a href="electronicalBillToCheck.html">对账账单核对</a></li>
+              <li><a href="electronicalBillToSearch.html">对账账单查询</a></li>
+              <li><a href="electronicalBillOtherDetail.html">对账账单明细</a></li>
+              
+              <li class="nav-header">商务结算专员</li>
+              <li><a href="electronicalBillTempManage.html">临时账单管理</a></li>
+              <li><a href="electronicalBillTempEdit.html">临时账单编制</a></li>
+              <li><a href="electronicalBillTempDetail.html">临时账单明细</a></li>
+              
+              <li><a href="#" data-toggle="tooltip"></a></li>
+              <li><a href="#"></a></li>
+            </ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+        <!-- 添加账单期数的操作内容 -->
+        <div class="span9">
+          
+          <!-- 按钮区 -->
+        <div >  
+		<button type="button" class="btn btn-primary" @click="changeFlag_fn" data-toggle="modal" data-target="#myModal">新建期数</button>&nbsp;&nbsp;
+		<button type="button" class="btn btn-warning" @click="changeHtml_fn">上传基础数据</button>&nbsp;&nbsp;
+		<!-- <button type="button" class="btn btn-danger">删除期数</button><br> -->
+		</div>
+          <!-- 查询区 -->
+         <div class="input-append" style="float:right;margin-right:30px;">
+           	<form class="bs-example bs-example-form" role="form">
+			  <input class="span9" id="appendedInputButton" type="text" v-model="s_param">
+			  <button class="btn" type="button" @click="searchIssueByName_fn">查询</button>
+		  	</form>
+		</div>
+          	
+          <!-- 列表展示区 -->
+          	 <div class="table-responsive" >
+				<table class="table" style="margin-top:100px;" id="list_table">
+					<caption>注：期数状态：未发布、发布、已关闭；<br/>账单状态：未核对、已核对</caption>
+					<thead>
+						<tr>
+						  
+							<th>期数名称</th>
+							<th>开始日期</th>
+							<th>结束日期</th>
+							<th>期数状态</th>
+							<th>账单状态</th>
+							<th>操作</th>
+							<th><a id="12" href="222"></a></th>
+						</tr>
+					</thead>
+					<tbody>
+					<tr v-for="issue in searchIssues" :key="issue.id">
+						<td>{{ issue.issueName }}期</td>
+						<td>{{ issue.issueStartDate | formatDate }}</td>
+						<td>{{ issue.issueEndDate | formatDate}}</td>
+						<td v-if="issue.issueState == 0"><a href="#" data-toggle="tooltip" data-placement="left" title="点我发布">未发布</a></td>
+						<td v-if="issue.issueState == 1"><a href="#" data-toggle="tooltip" data-placement="left" title="点我关闭">已发布</a></td>
+						<td v-if="issue.issueState == 2">已关闭</td>
+						<td v-if="issue.billState == 0">未核对</td>
+						<td v-if="issue.billState == 1">已核对</td>
+						
+						<td>
+							<a href="#" data-toggle="modal" data-target="#myModal">修改</a> | 
+							<a href="#">删除</a> | 
+							<a href="electronicalBillMonthSearch.html">账单查询</a>
+						</td>
+						
+					</tr>
+					
+					</tbody>
+			</table>
+			
+		</div>
+		
+		
+		<div class="pagination" style="margin-top:30px;margin-right:30px;float:right;">
+		  <ul>
+		  	<li><a  data-toggle="tooltip" data-placement="top" title="点我换每页条数">每页 <span>10</span>条</a></li>
+		  	<li><a >跳转到 <span><input type="text" style="height: 14px;margin-bottom: 0px;width: 20px;"></input></span>页</a></li>
+		    <li><a  @click="Previous()">Prev</a></li>
+		    <li v-for="p in pageList" v-bind:class="{active: isActivePage(p) }">
+		    	<a  @click="selectPage(p)">{{ p }}</a></li>
+		    
+		    <li><a  @click="Next()">Next</a></li>
+		    <li><a >共 {{pages}} 页&nbsp; {{totalSize}} 条</a></li>
+		  </ul>
+		</div>
+          
+          <!-- 模态框 -->
+          <!-- 模态框（Modal） -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;
+						</button>
+						<h4 class="modal-title" id="myModalLabel">
+						创建账单期数
+						</h4>
+					</div>
+					<div class="modal-body" >
+						<form class="form-horizontal">
+							<div class="control-group">
+					    		<label class="control-label" for="startDateId">开始时间</label>
+					    		<div class="controls">
+					      			<input id="startDateId" name="issueStartDate"  class="startDate" size="16" type="text" placeholder="2017-01-01" readonly="readonly"/>
+					    		</div>
+					  		</div>
+					  		<div class="control-group">
+					    		<label class="control-label" for="endDateId">截止时间</label>
+					    		<div class="controls">
+					      			<input id="endDateId" name="issueEndDate" class="startDate" size="16" type="text" placeholder="2017-03-31" readonly="readonly"/>
+					    		</div>
+					  		</div>
+					  		<div class="control-group" v-if="saveOrUpdateFlag != 's_'">
+					    		<label class="control-label" for="issueStateId">期数状态</label>
+					    		<div class="controls">
+					    			<select id="issueStateId" name="issueState" class="form-control">
+								      <option value="0">未发布</option>
+								      <option value="1">已发布</option>
+								      <option value="2">已关闭</option>
+								    </select>
+					    		</div>
+					  		</div>
+					  		<div class="control-group" v-if="saveOrUpdateFlag != 's_'">
+					    		<label class="control-label" for="issueStateId">账单状态</label>
+					    		<div class="controls">
+					    			<select id="issueStateId" name="issueState" class="form-control">
+								      <option value="0">未核对</option>
+								      <option value="1">已核对</option>
+								    </select>
+					    		</div>
+					  		</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button  type="button" class="btn btn-primary" v-on:click="saveIssue_fn">保存</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					</div>
+			</div>
+		</div>
+	</div>
+		
+       </div><!--/span-->
+        
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; mis组  2017</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+ </div>
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+   
+    <script type="text/javascript">
+    	window.onload = function(){
+    		var data_init = { 
+        			s_param : "",                           //查询参数
+        			searchIssues:[],                        //要展示的数据
+        			saveOrUpdateFlag : 'u_' ,               //是新建还是修改的标志:默认是新建
+        			totalSize : 0,                          //共多少条数据
+        			pageSize : 10,                           //每页条数
+        			pages : 0,                              //共多少分页数
+    				newPages : 0,                           //新跳转的页码
+    				pageList : [],                          //页码集合
+    				selPage : 1                             //当前页
+        			
+        	}
+    		var testVue_vm = new Vue({
+      		  el:'#testVue_id',
+      		  data:data_init,
+      	  	  methods:{
+      	  		  
+      	  		//1.新建账单期数
+      	  		saveIssue_fn : function(){
+      	  			//获取数据
+      	  			var issueStartDate2 = $("#startDateId").val(); //期数开始时间
+      	  			var issueEndDate2 = $("#endDateId").val();     //期数截止时间
+      	  			//发起验证--是否有期数未关闭：存在未关闭期数，提示，请先关闭期数。否则发起新建期数请求
+      	  			
+      	  			//发起新建期数请求
+      	  			axios.get(base_path+'/miselebill/saveIssue',{
+      	  						params:{
+      	  							issueStartDate1 : issueStartDate2,
+      	        	  				issueEndDate1 : issueEndDate2
+      	  						}
+      	  					})
+      	  					.then(function(response){
+      	  						 if(null != response.data){
+      	  							//2.清空输入框value
+      	  							$("#startDateId").val(""); //期数开始时间
+      	  							$("#endDateId").val("");     //期数截止时间
+      	  							//3.关闭模态框
+      	  							$('#myModal').modal('hide');
+      	  							//4.局部刷新列表
+      	  							var issueName_Res = response.data.issueName +"期";
+      	  							var issueStartDate1_Res = response.data.issueStartDate1;
+      	  							var issueEndDate1_Res = response.data.issueEndDate1;
+      	  							var id_Res = response.data.id;
+      	  							var trObj = "<tr>"+
+  												"<td>"+issueName_Res+"</td>"+
+  												"<td>"+issueStartDate1_Res+"</td>"+
+  												"<td>"+issueEndDate1_Res+"</td>"+
+  												"<td><a href='#' data-toggle='tooltip' data-placement='left' title='点我发布'>"+'未发布'+"</a></td>"+
+  												"<td>"+'未核对'+"</td>"+
+  												"<td>"+
+  												"<a href='#' data-toggle='modal' data-target='#myModal'>修改</a> |"+
+  												"<a href='#'>删除</a> |"+
+  												"<a href='electronicalBillMonthSearch.html'>账单查询</a></td>"+
+  												"</tr>";
+  									
+  								    var $tr1 = $("#list_table tr").eq(1);
+      	  							$tr1.before(trObj);
+      	  							var $tr1_ = $("#list_table tr").eq(-1);
+      	  							$tr1_.remove();
+      	  							$('[data-toggle="tooltip"]').tooltip();
+      	  							testVue_vm.saveOrUpdateFlag ="u_";
+      	  						}else{
+      	  							//1.提示错误信息
+      	  						} 
+      	  					})
+      	  					.catch(function(error){
+      	  						//1.提示错误信息
+      	  					})
+      	  		},
+      	  		//根据条件查询名称期数
+      	  		searchIssueByName_fn : function(){
+      	  			queryListByPage(1);
+      	  		}, 
+      	  		//改变为新建标志
+      	  		changeFlag_fn : function(){
+      	  			testVue_vm.saveOrUpdateFlag = "s_";
+      	  		},
+      	  		//跳转到上传数据页面
+	      	  	changeHtml_fn : function(){
+	      	  		window.location.href = "electronicalBillMonthManage.html";
+	      	  	},
+      	  		//选中页
+    			selectPage : function (page) {
+    				testVue_vm.selPage = page;     //设置当前页
+    				testVue_vm.isActivePage(page);//选中样式
+    				
+    				queryListByPage(page); //发起请求
+    			},
+    			//设置当前选中页样式
+    			isActivePage : function (page) {
+    				return testVue_vm.selPage == page;
+    			},
+    			//上一页
+    			Previous : function () {
+    				if(testVue_vm.selPage  == 1){
+    					alert("第一页");
+    				}else{
+    					testVue_vm.selectPage(testVue_vm.selPage - 1);
+    				}
+    			},
+    			//下一页
+    			Next : function () {
+    				if(testVue_vm.selPage == testVue_vm.pages){
+    					alert("最后一页");
+    				}else{
+    					testVue_vm.selectPage(testVue_vm.selPage - (-1));
+    				}
+    			}
+      	  	},
+      	  	//过滤器
+      	  	filters:{
+      	  		formatDate:function(s){
+      	  			return moment(new Date(s)).format("YYYY-MM-DD");
+      	  		}
+      	  	},
+      	  	//生命周期
+      	  	beforeCreate : function(){
+      	  		//alert("beforeCreate");
+      	  	
+      	  	},
+      	  	created : function(){
+      	  		
+      	  		//alert("created");
+	      	  	
+      	  
+      	  	},
+      	  	beforeMount : function(){
+      	  		
+      	  		//alert("beforeMount");
+      	  	},
+      	  	mounted : function(){
+      	  		//alert("mounted");
+      	  		
+      	  	},
+      	  	beforeUpdate : function(){
+      	  		
+      	  	},
+      	  	updated : function(){
+      	  		
+      	  		//tooltip 信息提示
+      	  		$('[data-toggle="tooltip"]').tooltip();
+      	  		//日期控件样式
+      	  		$('.startDate').datetimepicker({  
+		    	                format : 'yyyy-mm-dd',  
+		    	                weekStart : 1,  
+		    	                todayBtn : 1,  
+		    	                autoclose : 1,  
+		    	                todayHighlight : 1,  
+		    	                startView : 2,  
+		    	                forceParse : 0,  
+		    	                showMeridian : 1,  
+		    	                language: 'zh-CN',//汉化  
+		    	                minView: "month" //选择日期后，不会再跳转去选择时分秒   
+		    	            });
+      	  		//模态框关闭
+        		$("#myModal").on('hide.bi.modal',function(){
+        			testVue_vm.saveOrUpdateFlag ="u_";
+        		});
+      	  		
+      	  	},
+      	  	
+      	  	beforeDestroy : function(){
+      	  		alert("beforeDestroy");
+      	  	},
+      	  	destroyed : function(){
+      	  		alert("destroyed");
+      	  	}
+      		
+      	  });
+    		//分页查询期数集合
+    		var queryListByPage = function(page){
+    			
+      	  		//发起请求查询list集合
+      		    	axios.post( base_path+'/miselebill/queryListByPage',{
+				      		    		pageNo : page,
+				    					pageSize : testVue_vm.pageSize,
+				    					searchParam : testVue_vm.s_param
+      		    				})
+      						.then(function(response){
+      							testVue_vm.searchIssues = response.data.list;
+      							
+      							testVue_vm.totalSize = response.data.total;   //共多少条数据
+      							
+      							testVue_vm.pageSize = response.data.pageSize;  //每页条数
+      							testVue_vm.pages = response.data.pages; //共多少分页数
+      							
+      							testVue_vm.newPages = testVue_vm.pages > 5 ? 5 : testVue_vm.pages; //按钮数超过5个，按5个显示
+      							testVue_vm.pageList = [];                          //页码集合
+      							testVue_vm.selPage = page;                    //当前页
+      							
+      							//分页要遍历的数组
+      							for (var i = 0; i < testVue_vm.newPages; i++) { //处理按钮数少于5个的页码集合
+      								testVue_vm.pageList.push(i + 1);
+      							}
+      							
+      							//当前页不能小于1，大于最大
+      							if (page < 1 || page > testVue_vm.pages) return;
+      							
+      							//最多显示分页数5
+      							if (page > 2) {
+      							//因为只显示5个页码，大于2页开始分页转换
+      								var newpageList = [];
+      								var i = (page - 3);
+      								if(testVue_vm.pages - i < 5){
+      									i = testVue_vm.pages -5;
+      								}
+      								for ( ; i < ((page + 2) > testVue_vm.pages ? testVue_vm.pages : (page + 2)) ; i++) {
+      									if(i+1 <0){
+      										i = 0;
+      									}
+      									newpageList.push(i + 1);
+      								}
+      								testVue_vm.pageList = newpageList;
+      							}
+      						});
+      	    		
+      	  		}
+    		queryListByPage(1);
+    	}
+   
+    </script>
+   
+  </body>
+</html>
