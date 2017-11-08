@@ -14,7 +14,7 @@ import rest.mybatis.dao.eBillDao.EleBillMapper;
 
 public class CommonUtils {
 
-	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	/**
 	 * TODO 日期类型转换为字符串
 	 * @param d
