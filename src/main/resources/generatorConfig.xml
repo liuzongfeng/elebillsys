@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+<!--DRIVER-->
+    <classPathEntry location="F:\developertool\mysqlconn\mysql-connector-java-5.1.39.jar"/>
+  <context id="context1">
+    <!--DATABASE URL-->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://172.16.2.4:3306/DY_ELECTRONICAL_BILL" userId="root" password="pmo2009">
+        </jdbcConnection>
+    <!--MODEL-->
+        <javaModelGenerator targetPackage="rest.mybatis.model.eBillModel" targetProject="F:\elebillsys0921\EBSYSTEM\src\main\java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+        <!--MAPPER-->
+        <sqlMapGenerator targetPackage="rest.mybatis.mapping.eBillMapping" targetProject="F:\elebillsys0921\EBSYSTEM\src\main\resources">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+        <!--DAO-->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="rest.mybatis.dao.eBillDao" targetProject="F:\elebillsys0921\EBSYSTEM\src\main\java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+        <!--TABELS AND NAME domainObjectName="EBILL_ISSUE"-->
+        
+<table schema="DY_ELECTRONICAL_BILL" tableName="%"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+  </context>
+</generatorConfiguration>
