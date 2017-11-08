@@ -1,16 +1,18 @@
 package rest.controller;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -39,6 +41,16 @@ public class eleBillController {
 		String issueId  = req.getParameter("issueObjId");
 		
 		String fileName = uploadfile.getOriginalFilename();
+		String fileTail = getTail(fileName);
+		if(null != fileTail && fileTail.equals("xls")){
+			
+		}else if(null != fileTail && fileTail.equals("xlsx")){
+			//判断上传的文件类别
+			
+		}else{
+			
+		}
+		
 		
 		System.out.println(uploadfile.getOriginalFilename());
 		System.out.println(uploadfile.getName());
@@ -47,6 +59,33 @@ public class eleBillController {
 	
 	}
 	
+	/**
+	 * TODO 处理预收表
+	 * @param uploadfile
+	 * @throws IOException 
+	 */
+	public void saveAdvancesReceivedFile(MultipartFile uploadfile) throws IOException{
+		
+		InputStream is = uploadfile.getInputStream();
+		XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
+		if(null != xssfWorkbook){
+			XSSFSheet sheet = xssfWorkbook.getSheetAt(0);
+			if(null != sheet){
+				for(int i=1; i<sheet.getLastRowNum(); i++ ){
+					XSSFRow row = sheet.getRow(i);
+					if(null != row){
+						
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * TODO 获得文件后缀
+	 * @param fileName
+	 * @return
+	 */
 	private String getTail(String fileName){
 		
 		if(null == fileName || "".equals(fileName) || !fileName.contains(".")){
