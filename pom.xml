@@ -65,7 +65,12 @@
 		    <artifactId>poi-ooxml</artifactId>
 		    <version>3.9</version>
 		</dependency>
-       
+       <!-- https://mvnrepository.com/artifact/net.sourceforge.jexcelapi/jxl -->
+		<dependency>
+		    <groupId>net.sourceforge.jexcelapi</groupId>
+		    <artifactId>jxl</artifactId>
+		    <version>2.5.7</version>
+		</dependency>
          
 	<!-- mybatis -->
 	<dependency>

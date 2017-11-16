@@ -103,29 +103,29 @@
 						<tr>
 						    
 							<td>对账导出_应收净额表</td>
-							<td><button class="btn" type="button" data-toggle="modal" data-target="#uploadAccountLimit">上传</button></td>
+							<td><button id="file_netsum" @click="changeFileType($event)" class="btn" type="button" data-toggle="modal" data-target="#uploadAccountLimit">上传</button></td>
 						</tr>
 						<tr>
 						    
 							<td>对账导出_销售业务统计总表</td>
-							<td><button class="btn" type="button">上传</button></td>
+							<td><button id="file_statistic" @click="changeFileType($event)" class="btn" type="button" data-toggle="modal" data-target="#uploadAccountLimit">上传</button></td>
 						</tr>
 						<tr>
 						    
 							<td>对账导出_留返利往来清单</td>
-							<td><button class="btn" type="button">上传</button></td>
+							<td><button id="file_rebate" @click="changeFileType($event)" class="btn" type="button" data-toggle="modal" data-target="#uploadAccountLimit">上传</button></td>
 						</tr>
 						<tr>
 							<td>对账导出_未核销的留返利</td>
-							<td><button class="btn" type="button">上传</button></td>
+							<td><button id="file_unrebate" @click="changeFileType($event)" class="btn" type="button" data-toggle="modal" data-target="#uploadAccountLimit">上传</button></td>
 						</tr>
 						<tr>
 							<td>预收表</td>
-							<td><button class="btn" type="button">上传</button></td>
+							<td><button id="file_yuhsou" @click="changeFileType($event)" class="btn" type="button" data-toggle="modal" data-target="#uploadAccountLimit">上传</button></td>
 						</tr>
 						<tr>
 							<td>对账导出_资金占用费计算表</td>
-							<td><button class="btn" type="button">上传</button></td>
+							<td><button id="file_useamount" @click="changeFileType($event)" class="btn" type="button" data-toggle="modal" data-target="#uploadAccountLimit">上传</button></td>
 						</tr>
 						<tr>
 							<td></td>
@@ -208,8 +208,8 @@
     			issueId : null,
     			issueStartDate : null,
     			issueEndDate : null,
-    			issueObjId : null
-    			
+    			issueObjId : null,
+    			upfileType : ""
     			
     	}
     	
@@ -217,6 +217,10 @@
     		el : "#manageId",
     		data : data_manage,
     		methods : {
+    			//改变文件类型
+    			changeFileType : function(event){
+    				manageVm.upfileType = $(event.target).prop("id");
+    			},
     			
     			//文件上传
     			uploadFile_fn : function(){
@@ -226,6 +230,7 @@
     				formdata.append('issueStartDate',manageVm.issueStartDate);
     				formdata.append('issueEndDate',manageVm.issueEndDate);
     				formdata.append('issueObjId',manageVm.issueObjId);
+    				formdata.append('upfileType',manageVm.upfileType);
     				
     				
     				//请求
@@ -236,6 +241,8 @@
     					headers : {'Content-Type' : 'multipart/form-data'}
     					
     				}).then(function(response){
+    					alert("上传成功");
+    				}).catch(function(error){
     					
     				}) 
     			},

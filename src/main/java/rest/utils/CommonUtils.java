@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -72,5 +73,12 @@ public class CommonUtils {
 		return pageInfo;
 		
 	}
-	
+	/**
+	 * @author 刘宗峰
+	 * TODO 生成uuid
+	 * @return
+	 */
+	public static String obtainUUID(){
+		return UUID.randomUUID().toString().replaceAll("-", "");
+	}
 }

@@ -9,7 +9,7 @@
     -->
     <id column="ID" jdbcType="VARCHAR" property="id" />
     <result column="RECONCILIATION_OBJ" jdbcType="VARCHAR" property="reconciliationObj" />
-    <result column="COLLECTION_TYPE" jdbcType="INTEGER" property="collectionType" />
+    <result column="COLLECTION_TYPE" jdbcType="VARCHAR" property="collectionType" />
     <result column="COLLECTION_NUMBER" jdbcType="VARCHAR" property="collectionNumber" />
     <result column="COLLECTION_DAYS" jdbcType="TIMESTAMP" property="collectionDays" />
     <result column="CURRENCY" jdbcType="VARCHAR" property="currency" />
@@ -69,13 +69,56 @@
       UNCHECKED_SUM, ADVANCES_RECEIVED_OPERATOR, 
       ADVANCES_RECEIVED_OPERATE_DATE, FR_ISSUE_ID, 
       ADVANCES_RECEIVED_IS_LIVE)
-    values (#{id,jdbcType=VARCHAR}, #{reconciliationObj,jdbcType=VARCHAR}, #{collectionType,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=VARCHAR}, #{reconciliationObj,jdbcType=VARCHAR}, #{collectionType,jdbcType=VARCHAR}, 
       #{collectionNumber,jdbcType=VARCHAR}, #{collectionDays,jdbcType=TIMESTAMP}, #{currency,jdbcType=VARCHAR}, 
       #{exchangeRate,jdbcType=DOUBLE}, #{consumer,jdbcType=VARCHAR}, #{salesman,jdbcType=VARCHAR}, 
       #{department,jdbcType=VARCHAR}, #{advancesReceivedAbstract,jdbcType=VARCHAR}, #{collectionSum,jdbcType=DOUBLE}, 
       #{uncheckedSum,jdbcType=DOUBLE}, #{advancesReceivedOperator,jdbcType=VARCHAR}, 
       #{advancesReceivedOperateDate,jdbcType=TIMESTAMP}, #{frIssueId,jdbcType=VARCHAR}, 
       #{advancesReceivedIsLive,jdbcType=INTEGER})
+  </insert>
+  <!-- 批量插入 -->
+  <insert id="insertBatch"  parameterType="java.util.List">
+    
+    insert into ADVANCES_RECEIVED (ID,
+    	 RECONCILIATION_OBJ, 
+    	 COLLECTION_TYPE, 
+      	 COLLECTION_NUMBER, 
+      	 COLLECTION_DAYS, 
+      	 CURRENCY, 
+      	 EXCHANGE_RATE, 
+      	 CONSUMER, 
+      	 SALESMAN, 
+      	 DEPARTMENT, 
+      	 ADVANCES_RECEIVED_ABSTRACT, 
+      	 COLLECTION_SUM, 
+      	 UNCHECKED_SUM, 
+      	 ADVANCES_RECEIVED_OPERATOR, 
+         ADVANCES_RECEIVED_OPERATE_DATE, 
+         FR_ISSUE_ID, 
+         ADVANCES_RECEIVED_IS_LIVE
+         )
+    values 
+    <foreach collection="list" item="item" index="index"  separator=",">
+    	
+    	(#{item.id,jdbcType=VARCHAR},
+    	#{item.reconciliationObj,jdbcType=VARCHAR}, 
+    	#{item.collectionType,jdbcType=VARCHAR}, 
+      	#{item.collectionNumber,jdbcType=VARCHAR}, 
+      	#{item.collectionDays,jdbcType=TIMESTAMP}, 
+      	#{item.currency,jdbcType=VARCHAR}, 
+      	#{item.exchangeRate,jdbcType=DOUBLE}, 
+      	#{item.consumer,jdbcType=VARCHAR}, 
+      	#{item.salesman,jdbcType=VARCHAR}, 
+      	#{item.department,jdbcType=VARCHAR}, 
+      	#{item.advancesReceivedAbstract,jdbcType=VARCHAR}, 
+      	#{item.collectionSum,jdbcType=DOUBLE}, 
+      	#{item.uncheckedSum,jdbcType=DOUBLE}, 
+      	#{item.advancesReceivedOperator,jdbcType=VARCHAR}, 
+      	#{item.advancesReceivedOperateDate,jdbcType=TIMESTAMP}, 
+      	#{item.frIssueId,jdbcType=VARCHAR}, 
+      	#{item.advancesReceivedIsLive,jdbcType=INTEGER})
+    </foreach>
   </insert>
   <insert id="insertSelective" parameterType="rest.mybatis.model.eBillModel.AdvancesReceived">
     <!--
@@ -145,7 +188,7 @@
         #{reconciliationObj,jdbcType=VARCHAR},
       </if>
       <if test="collectionType != null">
-        #{collectionType,jdbcType=INTEGER},
+        #{collectionType,jdbcType=VARCHAR},
       </if>
       <if test="collectionNumber != null">
         #{collectionNumber,jdbcType=VARCHAR},
@@ -203,7 +246,7 @@
         RECONCILIATION_OBJ = #{reconciliationObj,jdbcType=VARCHAR},
       </if>
       <if test="collectionType != null">
-        COLLECTION_TYPE = #{collectionType,jdbcType=INTEGER},
+        COLLECTION_TYPE = #{collectionType,jdbcType=VARCHAR},
       </if>
       <if test="collectionNumber != null">
         COLLECTION_NUMBER = #{collectionNumber,jdbcType=VARCHAR},
@@ -258,7 +301,7 @@
     -->
     update ADVANCES_RECEIVED
     set RECONCILIATION_OBJ = #{reconciliationObj,jdbcType=VARCHAR},
-      COLLECTION_TYPE = #{collectionType,jdbcType=INTEGER},
+      COLLECTION_TYPE = #{collectionType,jdbcType=VARCHAR},
       COLLECTION_NUMBER = #{collectionNumber,jdbcType=VARCHAR},
       COLLECTION_DAYS = #{collectionDays,jdbcType=TIMESTAMP},
       CURRENCY = #{currency,jdbcType=VARCHAR},
