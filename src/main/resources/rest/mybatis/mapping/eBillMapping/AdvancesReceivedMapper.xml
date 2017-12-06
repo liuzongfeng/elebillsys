@@ -47,6 +47,15 @@
     from ADVANCES_RECEIVED
     where ID = #{id,jdbcType=VARCHAR}
   </select>
+  
+  <select id="searchByIssueId" parameterType="java.lang.String" resultType="java.lang.Integer">
+    
+    select 
+    	count(ID)
+    from ADVANCES_RECEIVED
+    where FR_ISSUE_ID = #{issueId,jdbcType=VARCHAR}
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     <!--
       WARNING - @mbggenerated

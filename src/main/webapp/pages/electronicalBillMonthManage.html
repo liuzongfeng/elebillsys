@@ -102,29 +102,29 @@
 					<tbody>
 						<tr>
 						    
-							<td>对账导出_应收净额表</td>
+							<td><span>对账导出_应收净额表</span>           &nbsp; &nbsp; &nbsp;<span style="float:right;margin-right:200px;">{{netsumMessage}}&nbsp;&nbsp;{{netsumCount}}</span></td>
 							<td><button id="file_netsum" @click="changeFileType($event)" class="btn" type="button" data-toggle="modal" data-target="#uploadAccountLimit">上传</button></td>
 						</tr>
 						<tr>
 						    
-							<td>对账导出_销售业务统计总表</td>
+							<td><span>对账导出_销售业务统计总表</span>    &nbsp; &nbsp; &nbsp;<span style="float:right;margin-right:200px;">{{statisticMessage}}&nbsp;&nbsp;{{statisticCount}}</span></td>
 							<td><button id="file_statistic" @click="changeFileType($event)" class="btn" type="button" data-toggle="modal" data-target="#uploadAccountLimit">上传</button></td>
 						</tr>
 						<tr>
 						    
-							<td>对账导出_留返利往来清单</td>
+							<td><span>对账导出_留返利往来清单</span>         &nbsp; &nbsp; &nbsp;<span style="float:right;margin-right:200px;">{{rebateMessage}}&nbsp;&nbsp;{{rebateCount}}</span></td>
 							<td><button id="file_rebate" @click="changeFileType($event)" class="btn" type="button" data-toggle="modal" data-target="#uploadAccountLimit">上传</button></td>
 						</tr>
 						<tr>
-							<td>对账导出_未核销的留返利</td>
+							<td><span>对账导出_未核销的留返利</span>            &nbsp; &nbsp; &nbsp;<span style="float:right;margin-right:200px;">{{unrebateMessage}}&nbsp;&nbsp;{{unrebateCount}}</span></td>
 							<td><button id="file_unrebate" @click="changeFileType($event)" class="btn" type="button" data-toggle="modal" data-target="#uploadAccountLimit">上传</button></td>
 						</tr>
 						<tr>
-							<td>预收表</td>
-							<td><button id="file_yuhsou" @click="changeFileType($event)" class="btn" type="button" data-toggle="modal" data-target="#uploadAccountLimit">上传</button></td>
+							<td><span>预收表</span>                  &nbsp; &nbsp; &nbsp;<span style="float:right;margin-right:200px;">{{yushouMessage}}&nbsp;&nbsp;{{yushouCount}}</span></td>
+							<td><button id="file_yushou" @click="changeFileType($event)" class="btn" type="button" data-toggle="modal" data-target="#uploadAccountLimit">上传</button></td>
 						</tr>
 						<tr>
-							<td>对账导出_资金占用费计算表</td>
+							<td><span>对账导出_资金占用费计算表  </span>            &nbsp; &nbsp; &nbsp;<span style="float:right;margin-right:200px;">{{useamountMessage}}&nbsp;&nbsp;{{useamountCount}}</span></td>
 							<td><button id="file_useamount" @click="changeFileType($event)" class="btn" type="button" data-toggle="modal" data-target="#uploadAccountLimit">上传</button></td>
 						</tr>
 						<tr>
@@ -141,7 +141,7 @@
 	<div id="uploadAccountLimit" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		<h3 id="myModalLabel">上传应收净额表</h3>
+		<h3 id="myModalLabel">上传{{upfileName}}</h3>
 	  </div>
 	  <div class="modal-body">
 		  <div class="bs-docs-example" id="uploadpriceForm">
@@ -209,8 +209,20 @@
     			issueStartDate : null,
     			issueEndDate : null,
     			issueObjId : null,
-    			upfileType : ""
-    			
+    			upfileType : "",
+    			upfileName : "",
+    			netsumMessage : "",
+    			netsumCount : "",
+    			statisticMessage : "",
+    			statisticCount : "",
+    			rebateMessage : "",
+    			rebateCount : "",
+    			unrebateMessage : "",
+    			unrebateCount : "",
+    			yushouMessage : "",
+    			yushouCount : "",
+    			useamountMessage : "",
+    			useamountCount : ""
     	}
     	
     	var manageVm = new Vue({
@@ -220,6 +232,8 @@
     			//改变文件类型
     			changeFileType : function(event){
     				manageVm.upfileType = $(event.target).prop("id");
+    				manageVm.upfileName = "";
+    				manageVm.upfileName = $($(event.target).parent().prev().children()[0]).text();
     			},
     			
     			//文件上传
@@ -241,7 +255,31 @@
     					headers : {'Content-Type' : 'multipart/form-data'}
     					
     				}).then(function(response){
-    					alert("上传成功");
+    					//1.清空表单内容
+    					$('input[id=lefile]').val("");
+    					$('#photoCover').val("");
+    					
+    					//2.关闭模态框
+    					$('#uploadAccountLimit').modal('hide')
+    					//3.展示上传成功
+    					if(null != response.data){
+    						if("file_netsum" == response.data){
+    							manageVm.netsumMessage = "上传成功";
+    						}else if("file_statistic" == response.data){
+    							manageVm.statisticMessage = "上传成功";
+    						}else if("file_rebate" == response.data){
+    							manageVm.rebateMessage = "上传成功";
+    						}else if("file_unrebate" == response.data){
+    							manageVm.unrebateMessage = "上传成功";
+    						}else if("file_yushou" == response.data){
+    							manageVm.yushouMessage = "上传成功";
+    						}else if("file_useamount" == response.data){
+    							manageVm.useamountMessage = "上传成功";
+    						}else{
+    							
+    						}
+    					}
+    					
     				}).catch(function(error){
     					
     				}) 
@@ -277,34 +315,42 @@
 			    	
       	  	}
     	});
-    	/* //
-    	$('.startDate').datetimepicker({  
-	    	                format : 'yyyy-mm-dd',  
-	    	                weekStart : 1,  
-	    	                todayBtn : 1,  
-	    	                autoclose : 1,  
-	    	                todayHighlight : 1,  
-	    	                startView : 2,  
-	    	                forceParse : 0,  
-	    	                showMeridian : 1,  
-	    	                language: 'zh-CN',//汉化  
-	    	                minView: "month" //选择日期后，不会再跳转去选择时分秒   
-	    	            }); */
     	
     	//获得未发布的期数
     	var obtainIssueOne = function(){
     		axios.get( base_path+'/miselebill/searchEbIssue')
     		      .then(function(response){
-    		    	  manageVm.issueObjId = response.data.id;
-    		    	  manageVm.issueName =  response.data.issueName;
-    		    	  manageVm.issueStartDate = moment(new Date(response.data.issueStartDate)).format("YYYY-MM-DD") ;
-    		    	  manageVm.issueEndDate = moment(new Date(response.data.issueEndDate)).format("YYYY-MM-DD") ;
+    		    	  manageVm.issueObjId = response.data.issue.id;
+    		    	  manageVm.issueName =  response.data.issue.issueName;
+    		    	  manageVm.issueStartDate = moment(new Date(response.data.issue.issueStartDate)).format("YYYY-MM-DD") ;
+    		    	  manageVm.issueEndDate = moment(new Date(response.data.issue.issueEndDate)).format("YYYY-MM-DD") ;
+    		    	  //---处理上传相关
+    		    	  var c1 = response.data.file_netsum;
+    		    	  var c2 = response.data.file_rebate;
+    		    	  var c3 = response.data.file_unrebate;
+    		    	  var c4 = response.data.file_statistic;
+    		    	  var c5 = response.data.file_yushou;
+    		    	  var c6 = response.data.file_useamount;
+    		    	  if(null != c1 && c1 > 0){manageVm.netsumMessage = "成功上传";manageVm.netsumCount = c1 +"条"}
+    		    	  if(null != c2 && c2 > 0){manageVm.rebateMessage = "成功上传";manageVm.rebateCount = c2 +"条"}
+    		    	  if(null != c3 && c3 > 0){manageVm.unrebateMessage = "成功上传";manageVm.unrebateCount = c3 +"条"}
+    		    	  if(null != c4 && c4 > 0){manageVm.statisticMessage = "成功上传";manageVm.statisticCount = c4 +"条"}
+    		    	  if(null != c5 && c5 > 0){manageVm.yushouMessage = "成功上传";manageVm.yushouCount = c5 +"条"}
+    		    	  if(null != c6 && c6 > 0){manageVm.useamountMessage = "成功上传";manageVm.useamountCount = c6 +"条"}
+    		    	  
     		      })
     		      .catch(function(error){
     		    	  
     		      })
     	};
     	obtainIssueOne();
+    	$('#uploadAccountLimit').on('hide.bs.modal',
+    		    function() {
+		    		//1.清空表单内容
+					$('input[id=lefile]').val("");
+					$('#photoCover').val("");
+    		    })
+
     	
     }
     

@@ -14,7 +14,8 @@
     <result column="REBATE_DATE" jdbcType="TIMESTAMP" property="rebateDate" />
     <result column="REBATE_ABSTRACT" jdbcType="VARCHAR" property="rebateAbstract" />
     <result column="CONSIGNOR_NAME" jdbcType="VARCHAR" property="consignorName" />
-    <result column="REBATE_SUM" jdbcType="VARCHAR" property="rebateSum" />
+    <result column="REBATE_SUM" jdbcType="DOUBLE" property="rebateSum" />
+    <result column="REBATE_CHECK_SUM" jdbcType="DOUBLE" property="rebateCheckSum" />
     <result column="REBATE_PROPERTY" jdbcType="VARCHAR" property="rebateProperty" />
     <result column="REBATE_REMARKS" jdbcType="VARCHAR" property="rebateRemarks" />
     <result column="REBATE_OPERATOR" jdbcType="INTEGER" property="rebateOperator" />
@@ -29,7 +30,7 @@
       This element was generated on Wed Nov 08 17:30:48 CST 2017.
     -->
     ID, RECONCILIATION_OBJ, REBATE_NOTICE_BILL_NO, SALES_ORDER_NO, REBATE_DATE, REBATE_ABSTRACT, 
-    CONSIGNOR_NAME, REBATE_SUM, REBATE_PROPERTY, REBATE_REMARKS, REBATE_OPERATOR, REBATE_OPERAT_DATE, 
+    CONSIGNOR_NAME, REBATE_SUM,REBATE_CHECK_SUM, REBATE_PROPERTY, REBATE_REMARKS, REBATE_OPERATOR, REBATE_OPERAT_DATE, 
     REBATE_IS_LIVE, FR_ISSUE_ID
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -42,6 +43,13 @@
     <include refid="Base_Column_List" />
     from EB_REBATE_T
     where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="searchByIssueId" parameterType="java.lang.String" resultType="java.lang.Integer">
+   
+    select 
+    count(ID)
+    from EB_REBATE_T
+    where FR_ISSUE_ID = #{issueId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     <!--
@@ -60,14 +68,46 @@
     -->
     insert into EB_REBATE_T (ID, RECONCILIATION_OBJ, REBATE_NOTICE_BILL_NO, 
       SALES_ORDER_NO, REBATE_DATE, REBATE_ABSTRACT, 
-      CONSIGNOR_NAME, REBATE_SUM, REBATE_PROPERTY, 
+      CONSIGNOR_NAME, REBATE_SUM, REBATE_CHECK_SUM,REBATE_PROPERTY, 
       REBATE_REMARKS, REBATE_OPERATOR, REBATE_OPERAT_DATE, 
       REBATE_IS_LIVE, FR_ISSUE_ID)
     values (#{id,jdbcType=VARCHAR}, #{reconciliationObj,jdbcType=VARCHAR}, #{rebateNoticeBillNo,jdbcType=VARCHAR}, 
       #{salesOrderNo,jdbcType=VARCHAR}, #{rebateDate,jdbcType=TIMESTAMP}, #{rebateAbstract,jdbcType=VARCHAR}, 
-      #{consignorName,jdbcType=VARCHAR}, #{rebateSum,jdbcType=VARCHAR}, #{rebateProperty,jdbcType=VARCHAR}, 
+      #{consignorName,jdbcType=VARCHAR}, #{rebateSum,jdbcType=DOUBLE},#{rebateCheckSum,jdbcType=DOUBLE}, #{rebateProperty,jdbcType=VARCHAR}, 
       #{rebateRemarks,jdbcType=VARCHAR}, #{rebateOperator,jdbcType=INTEGER}, #{rebateOperatDate,jdbcType=TIMESTAMP}, 
       #{rebateIsLive,jdbcType=INTEGER}, #{frIssueId,jdbcType=VARCHAR})
+  </insert>
+  <!-- 批量插入 -->
+  <insert id="insertBatch"  parameterType="java.util.List">
+    
+    insert into EB_REBATE_T (
+    	 ID, RECONCILIATION_OBJ, REBATE_NOTICE_BILL_NO, 
+      SALES_ORDER_NO, REBATE_DATE, REBATE_ABSTRACT, 
+      CONSIGNOR_NAME, REBATE_SUM, REBATE_CHECK_SUM,REBATE_PROPERTY, 
+      REBATE_REMARKS, REBATE_OPERATOR, REBATE_OPERAT_DATE, 
+      REBATE_IS_LIVE, FR_ISSUE_ID
+         )
+    values 
+    <foreach collection="list" item="item" index="index"  separator=",">
+    	
+    	(
+    		#{item.id,jdbcType=VARCHAR}, 
+    		#{item.reconciliationObj,jdbcType=VARCHAR}, 
+    		#{item.rebateNoticeBillNo,jdbcType=VARCHAR}, 
+      		#{item.salesOrderNo,jdbcType=VARCHAR}, 
+      		#{item.rebateDate,jdbcType=TIMESTAMP}, 
+      		#{item.rebateAbstract,jdbcType=VARCHAR}, 
+      		#{item.consignorName,jdbcType=VARCHAR}, 
+      		#{item.rebateSum,jdbcType=DOUBLE},
+      		#{item.rebateCheckSum,jdbcType=DOUBLE}, 
+      		#{item.rebateProperty,jdbcType=VARCHAR}, 
+      		#{item.rebateRemarks,jdbcType=VARCHAR}, 
+      		#{item.rebateOperator,jdbcType=INTEGER}, 
+      		#{item.rebateOperatDate,jdbcType=TIMESTAMP}, 
+      		#{item.rebateIsLive,jdbcType=INTEGER}, 
+      		#{item.frIssueId,jdbcType=VARCHAR}
+    	)
+    </foreach>
   </insert>
   <insert id="insertSelective" parameterType="rest.mybatis.model.eBillModel.EbRebateT">
     <!--
@@ -100,6 +140,9 @@
       </if>
       <if test="rebateSum != null">
         REBATE_SUM,
+      </if>
+      <if test="rebateCheckSum != null">
+        REBATE_CHECK_SUM,
       </if>
       <if test="rebateProperty != null">
         REBATE_PROPERTY,
@@ -143,8 +186,12 @@
         #{consignorName,jdbcType=VARCHAR},
       </if>
       <if test="rebateSum != null">
-        #{rebateSum,jdbcType=VARCHAR},
+        #{rebateSum,jdbcType=DOUBLE},
       </if>
+      <if test="rebateCheckSum != null">
+        #{rebateCheckSum,jdbcType=DOUBLE},
+      </if>
+      
       <if test="rebateProperty != null">
         #{rebateProperty,jdbcType=VARCHAR},
       </if>
@@ -192,7 +239,10 @@
         CONSIGNOR_NAME = #{consignorName,jdbcType=VARCHAR},
       </if>
       <if test="rebateSum != null">
-        REBATE_SUM = #{rebateSum,jdbcType=VARCHAR},
+        REBATE_SUM = #{rebateSum,jdbcType=DOUBLE},
+      </if>
+      <if test="rebateSum != null">
+        REBATE_CHECK_SUM = #{rebateCheckSum,jdbcType=DOUBLE},
       </if>
       <if test="rebateProperty != null">
         REBATE_PROPERTY = #{rebateProperty,jdbcType=VARCHAR},
@@ -228,7 +278,8 @@
       REBATE_DATE = #{rebateDate,jdbcType=TIMESTAMP},
       REBATE_ABSTRACT = #{rebateAbstract,jdbcType=VARCHAR},
       CONSIGNOR_NAME = #{consignorName,jdbcType=VARCHAR},
-      REBATE_SUM = #{rebateSum,jdbcType=VARCHAR},
+      REBATE_SUM = #{rebateSum,jdbcType=DOUBLE},
+      REBATE_CHECK_SUM = #{rebateCheckSum,jdbcType=DOUBLE},
       REBATE_PROPERTY = #{rebateProperty,jdbcType=VARCHAR},
       REBATE_REMARKS = #{rebateRemarks,jdbcType=VARCHAR},
       REBATE_OPERATOR = #{rebateOperator,jdbcType=INTEGER},

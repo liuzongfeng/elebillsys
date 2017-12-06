@@ -36,6 +36,13 @@
     from EB_UNREBATE_T
     where ID = #{id,jdbcType=VARCHAR}
   </select>
+  <select id="searchByIssueId" parameterType="java.lang.String" resultType="java.lang.Integer">
+    
+    select 
+    	count(ID)
+    from EB_UNREBATE_T
+    where FR_ISSUE_ID = #{issueID,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     <!--
       WARNING - @mbggenerated
@@ -58,6 +65,35 @@
       #{rebateNetAmount,jdbcType=DOUBLE}, #{unrebateOperator,jdbcType=INTEGER}, #{unrebateOperateDate,jdbcType=TIMESTAMP}, 
       #{unrebateIsLive,jdbcType=INTEGER}, #{frIssueId,jdbcType=VARCHAR})
   </insert>
+  <!-- 批量插入 -->
+  <insert id="insertBatch"  parameterType="java.util.List">
+    
+    insert into EB_UNREBATE_T (
+    	 ID, 
+    	 RECONCILIATION_OBJ_NO, 
+    	 RECONCILIATION_OBJ_NAME, 
+      	 REBATE_NET_AMOUNT, 
+      	 UNREBATE_OPERATOR, 
+      	 UNREBATE_OPERATE_DATE, 
+      	 UNREBATE_IS_LIVE, 
+      	 FR_ISSUE_ID
+         )
+    values 
+    <foreach collection="list" item="item" index="index"  separator=",">
+    	
+    	(
+    		#{item.id,jdbcType=VARCHAR}, 
+    		#{item.reconciliationObjNo,jdbcType=VARCHAR}, 
+    		#{item.reconciliationObjName,jdbcType=VARCHAR}, 
+      		#{item.rebateNetAmount,jdbcType=DOUBLE}, 
+      		#{item.unrebateOperator,jdbcType=INTEGER}, 
+      		#{item.unrebateOperateDate,jdbcType=TIMESTAMP}, 
+      		#{item.unrebateIsLive,jdbcType=INTEGER}, 
+      		#{item.frIssueId,jdbcType=VARCHAR}
+    	)
+    </foreach>
+  </insert>
+  
   <insert id="insertSelective" parameterType="rest.mybatis.model.eBillModel.EbUnrebateT">
     <!--
       WARNING - @mbggenerated

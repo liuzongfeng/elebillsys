@@ -19,13 +19,14 @@
     <result column="SPEC_TYP" jdbcType="VARCHAR" property="specTyp" />
     <result column="CURRENCY_CODE" jdbcType="VARCHAR" property="currencyCode" />
     <result column="EXCHANGE_RATE" jdbcType="DOUBLE" property="exchangeRate" />
-    <result column="ORDER_NUM" jdbcType="INTEGER" property="orderNum" />
+    <result column="ORDER_NUM" jdbcType="DOUBLE" property="orderNum" />
+    <result column="ORDER_AMOUNT" jdbcType="DOUBLE" property="orderAmount" />
     <result column="AGENCY_AMOUNT" jdbcType="DOUBLE" property="agencyAmount" />
     <result column="BUSINESS_NO" jdbcType="VARCHAR" property="businessNo" />
     <result column="BUSINESS_DATE" jdbcType="TIMESTAMP" property="businessDate" />
-    <result column="SEND_NUM" jdbcType="INTEGER" property="sendNum" />
+    <result column="SEND_NUM" jdbcType="DOUBLE" property="sendNum" />
     <result column="SEND_AMOUNT" jdbcType="DOUBLE" property="sendAmount" />
-    <result column="INVOICE_NUM" jdbcType="INTEGER" property="invoiceNum" />
+    <result column="INVOICE_NUM" jdbcType="DOUBLE" property="invoiceNum" />
     <result column="INVOICE_AMOUNT" jdbcType="DOUBLE" property="invoiceAmount" />
     <result column="PAYLIBARY_AMOUNT" jdbcType="DOUBLE" property="paylibaryAmount" />
     <result column="SPECIAL_AMOUNT" jdbcType="DOUBLE" property="specialAmount" />
@@ -52,6 +53,10 @@
     <result column="TRADE" jdbcType="VARCHAR" property="trade" />
     <result column="PLIN" jdbcType="VARCHAR" property="plin" />
     <result column="END_SEND_DATE" jdbcType="TIMESTAMP" property="endSendDate" />
+    <result column="OPERATOR" jdbcType="INTEGER" property="operator" />
+    <result column="OPERATE_DATE" jdbcType="TIMESTAMP" property="operateDate" />
+    <result column="IS_LIVE" jdbcType="INTEGER" property="isLive" />
+    <result column="FR_ISSUEID" jdbcType="VARCHAR" property="frIssueId" />
     <result column="TEXT1" jdbcType="VARCHAR" property="text1" />
   </resultMap>
   <sql id="Base_Column_List">
@@ -61,12 +66,12 @@
       This element was generated on Wed Nov 08 17:30:48 CST 2017.
     -->
     ID, DATA_TYPE, ORDER_NO, ORDER_DETAIL_NO, ORDER_LINE_NO, ORDER_DATE, PURCHASE_UNITS, 
-    MATERIAL_CODE, MATERIAL_NAME, SPEC_TYP, CURRENCY_CODE, EXCHANGE_RATE, ORDER_NUM, 
+    MATERIAL_CODE, MATERIAL_NAME, SPEC_TYP, CURRENCY_CODE, EXCHANGE_RATE, ORDER_NUM, ORDER_AMOUNT,
     AGENCY_AMOUNT, BUSINESS_NO, BUSINESS_DATE, SEND_NUM, SEND_AMOUNT, INVOICE_NUM, INVOICE_AMOUNT, 
     PAYLIBARY_AMOUNT, SPECIAL_AMOUNT, REBATE_AMOUNT, PAYMENT_AMOUNT, PERFORMANCE, PROFIT_AMOUNT, 
     RECEIVABLE_AMOUNT, SHIPPER_NAME, SERVICE_TYPE, RECONCILIATION_OBJ, WORKER, DEPT, 
     DEPT_ID, AREA, SYS_PROJECT, SYS_PROJECTID, REMARKS, CHANGE_REMARKS, USE_UNIT, VIPDEPT, 
-    VIPDEPT_MANAGE, VIPDEPT_MANAGEID, TRADE, PLIN, END_SEND_DATE, TEXT1
+    VIPDEPT_MANAGE, VIPDEPT_MANAGEID, TRADE, PLIN, END_SEND_DATE,OPERATOR,OPERATE_DATE,IS_LIVE,FR_ISSUEID,TEXT1
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     <!--
@@ -79,6 +84,14 @@
     from EB_SALES_STATISTICS_T
     where ID = #{id,jdbcType=VARCHAR}
   </select>
+  <select id="searchByIssueId" parameterType="java.lang.String" resultType="java.lang.Integer">
+    
+    select 
+    	count(ID)
+    from EB_SALES_STATISTICS_T
+    where FR_ISSUEID = #{issueId,jdbcType=VARCHAR}
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     <!--
       WARNING - @mbggenerated
@@ -98,7 +111,7 @@
       ORDER_DETAIL_NO, ORDER_LINE_NO, ORDER_DATE, 
       PURCHASE_UNITS, MATERIAL_CODE, MATERIAL_NAME, 
       SPEC_TYP, CURRENCY_CODE, EXCHANGE_RATE, 
-      ORDER_NUM, AGENCY_AMOUNT, BUSINESS_NO, 
+      ORDER_NUM,ORDER_AMOUNT, AGENCY_AMOUNT, BUSINESS_NO, 
       BUSINESS_DATE, SEND_NUM, SEND_AMOUNT, 
       INVOICE_NUM, INVOICE_AMOUNT, PAYLIBARY_AMOUNT, 
       SPECIAL_AMOUNT, REBATE_AMOUNT, PAYMENT_AMOUNT, 
@@ -108,15 +121,15 @@
       AREA, SYS_PROJECT, SYS_PROJECTID, 
       REMARKS, CHANGE_REMARKS, USE_UNIT, 
       VIPDEPT, VIPDEPT_MANAGE, VIPDEPT_MANAGEID, 
-      TRADE, PLIN, END_SEND_DATE, 
+      TRADE, PLIN, END_SEND_DATE,OPERATOR,OPERATE_DATE,IS_LIVE,FR_ISSUEID, 
       TEXT1)
     values (#{id,jdbcType=VARCHAR}, #{dataType,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR}, 
       #{orderDetailNo,jdbcType=VARCHAR}, #{orderLineNo,jdbcType=INTEGER}, #{orderDate,jdbcType=TIMESTAMP}, 
       #{purchaseUnits,jdbcType=VARCHAR}, #{materialCode,jdbcType=VARCHAR}, #{materialName,jdbcType=VARCHAR}, 
       #{specTyp,jdbcType=VARCHAR}, #{currencyCode,jdbcType=VARCHAR}, #{exchangeRate,jdbcType=DOUBLE}, 
-      #{orderNum,jdbcType=INTEGER}, #{agencyAmount,jdbcType=DOUBLE}, #{businessNo,jdbcType=VARCHAR}, 
-      #{businessDate,jdbcType=TIMESTAMP}, #{sendNum,jdbcType=INTEGER}, #{sendAmount,jdbcType=DOUBLE}, 
-      #{invoiceNum,jdbcType=INTEGER}, #{invoiceAmount,jdbcType=DOUBLE}, #{paylibaryAmount,jdbcType=DOUBLE}, 
+      #{orderNum,jdbcType=DOUBLE},#{orderAmount,jdbcType=DOUBLE}, #{agencyAmount,jdbcType=DOUBLE}, #{businessNo,jdbcType=VARCHAR}, 
+      #{businessDate,jdbcType=TIMESTAMP}, #{sendNum,jdbcType=DOUBLE}, #{sendAmount,jdbcType=DOUBLE}, 
+      #{invoiceNum,jdbcType=DOUBLE}, #{invoiceAmount,jdbcType=DOUBLE}, #{paylibaryAmount,jdbcType=DOUBLE}, 
       #{specialAmount,jdbcType=DOUBLE}, #{rebateAmount,jdbcType=DOUBLE}, #{paymentAmount,jdbcType=DOUBLE}, 
       #{performance,jdbcType=DOUBLE}, #{profitAmount,jdbcType=DOUBLE}, #{receivableAmount,jdbcType=DOUBLE}, 
       #{shipperName,jdbcType=VARCHAR}, #{serviceType,jdbcType=VARCHAR}, #{reconciliationObj,jdbcType=VARCHAR}, 
@@ -124,8 +137,89 @@
       #{area,jdbcType=VARCHAR}, #{sysProject,jdbcType=VARCHAR}, #{sysProjectid,jdbcType=VARCHAR}, 
       #{remarks,jdbcType=VARCHAR}, #{changeRemarks,jdbcType=VARCHAR}, #{useUnit,jdbcType=VARCHAR}, 
       #{vipdept,jdbcType=VARCHAR}, #{vipdeptManage,jdbcType=VARCHAR}, #{vipdeptManageid,jdbcType=INTEGER}, 
-      #{trade,jdbcType=VARCHAR}, #{plin,jdbcType=VARCHAR}, #{endSendDate,jdbcType=TIMESTAMP}, 
+      #{trade,jdbcType=VARCHAR}, #{plin,jdbcType=VARCHAR}, #{endSendDate,jdbcType=TIMESTAMP},
+      #{operator,jdbcType=INTEGER}, #{operateDate,jdbcType=TIMESTAMP},#{isLive,jdbcType=INTEGER},#{frIssueId,jdbcType=VARCHAR}
       #{text1,jdbcType=VARCHAR})
+  </insert>
+  
+  <!-- 批量插入 -->
+  <insert id="insertBatch"  parameterType="java.util.List">
+    
+    insert into EB_SALES_STATISTICS_T (
+    		ID, DATA_TYPE, ORDER_NO, 
+      ORDER_DETAIL_NO, ORDER_LINE_NO, ORDER_DATE, 
+      PURCHASE_UNITS, MATERIAL_CODE, MATERIAL_NAME, 
+      SPEC_TYP, CURRENCY_CODE, EXCHANGE_RATE, 
+      ORDER_NUM,ORDER_AMOUNT, AGENCY_AMOUNT, BUSINESS_NO, 
+      BUSINESS_DATE, SEND_NUM, SEND_AMOUNT, 
+      INVOICE_NUM, INVOICE_AMOUNT, PAYLIBARY_AMOUNT, 
+      SPECIAL_AMOUNT, REBATE_AMOUNT, PAYMENT_AMOUNT, 
+      PERFORMANCE, PROFIT_AMOUNT, RECEIVABLE_AMOUNT, 
+      SHIPPER_NAME, SERVICE_TYPE, RECONCILIATION_OBJ, 
+      WORKER, DEPT, DEPT_ID, 
+      AREA, SYS_PROJECT, SYS_PROJECTID, 
+      REMARKS, CHANGE_REMARKS, USE_UNIT, 
+      VIPDEPT, VIPDEPT_MANAGE, VIPDEPT_MANAGEID, 
+      TRADE, PLIN, END_SEND_DATE,OPERATOR,OPERATE_DATE,IS_LIVE,FR_ISSUEID, 
+      TEXT1
+         )
+    values 
+    <foreach collection="list" item="item" index="index"  separator=",">
+    	
+    	(
+    		#{item.id,jdbcType=VARCHAR}, 
+    		#{item.dataType,jdbcType=VARCHAR}, 
+    		#{item.orderNo,jdbcType=VARCHAR}, 
+      		#{item.orderDetailNo,jdbcType=VARCHAR}, 
+      		#{item.orderLineNo,jdbcType=INTEGER}, 
+      		#{item.orderDate,jdbcType=TIMESTAMP}, 
+      		#{item.purchaseUnits,jdbcType=VARCHAR}, 
+      		#{item.materialCode,jdbcType=VARCHAR}, 
+      		#{item.materialName,jdbcType=VARCHAR}, 
+      		#{item.specTyp,jdbcType=VARCHAR}, 
+      		#{item.currencyCode,jdbcType=VARCHAR}, 
+      		#{item.exchangeRate,jdbcType=DOUBLE}, 
+      		#{item.orderNum,jdbcType=DOUBLE},
+      		#{item.orderAmount,jdbcType=DOUBLE}, 
+      		#{item.agencyAmount,jdbcType=DOUBLE}, 
+      		#{item.businessNo,jdbcType=VARCHAR}, 
+      		#{item.businessDate,jdbcType=TIMESTAMP}, 
+      		#{item.sendNum,jdbcType=DOUBLE}, 
+      		#{item.sendAmount,jdbcType=DOUBLE}, 
+      		#{item.invoiceNum,jdbcType=DOUBLE}, 
+      		#{item.invoiceAmount,jdbcType=DOUBLE}, 
+      		#{item.paylibaryAmount,jdbcType=DOUBLE}, 
+     		#{item.specialAmount,jdbcType=DOUBLE}, 
+     		#{item.rebateAmount,jdbcType=DOUBLE}, 
+     		#{item.paymentAmount,jdbcType=DOUBLE}, 
+      		#{item.performance,jdbcType=DOUBLE}, 
+      		#{item.profitAmount,jdbcType=DOUBLE}, 
+      		#{item.receivableAmount,jdbcType=DOUBLE}, 
+      		#{item.shipperName,jdbcType=VARCHAR}, 
+      		#{item.serviceType,jdbcType=VARCHAR}, 
+      		#{item.reconciliationObj,jdbcType=VARCHAR}, 
+      		#{item.worker,jdbcType=VARCHAR}, 
+      		#{item.dept,jdbcType=VARCHAR}, 
+      		#{item.deptId,jdbcType=INTEGER}, 
+      		#{item.area,jdbcType=VARCHAR}, 
+      		#{item.sysProject,jdbcType=VARCHAR}, 
+      		#{item.sysProjectid,jdbcType=VARCHAR}, 
+      		#{item.remarks,jdbcType=VARCHAR}, 
+      		#{item.changeRemarks,jdbcType=VARCHAR}, 
+      		#{item.useUnit,jdbcType=VARCHAR}, 
+      		#{item.vipdept,jdbcType=VARCHAR}, 
+      		#{item.vipdeptManage,jdbcType=VARCHAR}, 
+      		#{item.vipdeptManageid,jdbcType=INTEGER}, 
+      		#{item.trade,jdbcType=VARCHAR}, 
+      		#{item.plin,jdbcType=VARCHAR}, 
+      		#{item.endSendDate,jdbcType=TIMESTAMP},
+      		#{item.operator,jdbcType=INTEGER}, 
+      		#{item.operateDate,jdbcType=TIMESTAMP},
+      		#{item.isLive,jdbcType=INTEGER},
+      		#{item.frIssueId,jdbcType=VARCHAR},
+      		#{item.text1,jdbcType=VARCHAR}	
+    	)
+    </foreach>
   </insert>
   <insert id="insertSelective" parameterType="rest.mybatis.model.eBillModel.EbSalesStatisticsT">
     <!--
@@ -173,6 +267,9 @@
       </if>
       <if test="orderNum != null">
         ORDER_NUM,
+      </if>
+      <if test="orderAmount != null">
+       ORDER_AMOUNT,
       </if>
       <if test="agencyAmount != null">
         AGENCY_AMOUNT,
@@ -270,6 +367,18 @@
       <if test="endSendDate != null">
         END_SEND_DATE,
       </if>
+      <if test="operator != null">
+        OPERATOR,
+      </if>
+      <if test="operateDate != null">
+        OPERATE_DATE,
+      </if>
+      <if test="isLive != null">
+        IS_LIVE,
+      </if>
+      <if test="frIssueId != null">
+        FR_ISSUEID,
+      </if>
       <if test="text1 != null">
         TEXT1,
       </if>
@@ -312,7 +421,10 @@
         #{exchangeRate,jdbcType=DOUBLE},
       </if>
       <if test="orderNum != null">
-        #{orderNum,jdbcType=INTEGER},
+        #{orderNum,jdbcType=DOUBLE},
+      </if>
+      <if test="orderAmount != null">
+        #{orderAmount,jdbcType=DOUBLE},
       </if>
       <if test="agencyAmount != null">
         #{agencyAmount,jdbcType=DOUBLE},
@@ -324,13 +436,13 @@
         #{businessDate,jdbcType=TIMESTAMP},
       </if>
       <if test="sendNum != null">
-        #{sendNum,jdbcType=INTEGER},
+        #{sendNum,jdbcType=DOUBLE},
       </if>
       <if test="sendAmount != null">
         #{sendAmount,jdbcType=DOUBLE},
       </if>
       <if test="invoiceNum != null">
-        #{invoiceNum,jdbcType=INTEGER},
+        #{invoiceNum,jdbcType=DOUBLE},
       </if>
       <if test="invoiceAmount != null">
         #{invoiceAmount,jdbcType=DOUBLE},
@@ -410,6 +522,18 @@
       <if test="endSendDate != null">
         #{endSendDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="operator != null">
+        #{operator,jdbcType=INTEGER},
+      </if>
+      <if test="operateDate != null">
+        #{operateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isLive != null">
+        #{isLive,jdbcType=INTEGER},
+      </if>
+      <if test="frIssueId != null">
+        #{frIssueId,jdbcType=VARCHAR},
+      </if>
       <if test="text1 != null">
         #{text1,jdbcType=VARCHAR},
       </if>
@@ -457,7 +581,10 @@
         EXCHANGE_RATE = #{exchangeRate,jdbcType=DOUBLE},
       </if>
       <if test="orderNum != null">
-        ORDER_NUM = #{orderNum,jdbcType=INTEGER},
+        ORDER_NUM = #{orderNum,jdbcType=DOUBLE},
+      </if>
+      <if test="orderAmount != null">
+        ORDER_AMOUNT = #{orderAmount,jdbcType=DOUBLE},
       </if>
       <if test="agencyAmount != null">
         AGENCY_AMOUNT = #{agencyAmount,jdbcType=DOUBLE},
@@ -469,13 +596,13 @@
         BUSINESS_DATE = #{businessDate,jdbcType=TIMESTAMP},
       </if>
       <if test="sendNum != null">
-        SEND_NUM = #{sendNum,jdbcType=INTEGER},
+        SEND_NUM = #{sendNum,jdbcType=DOUBLE},
       </if>
       <if test="sendAmount != null">
         SEND_AMOUNT = #{sendAmount,jdbcType=DOUBLE},
       </if>
       <if test="invoiceNum != null">
-        INVOICE_NUM = #{invoiceNum,jdbcType=INTEGER},
+        INVOICE_NUM = #{invoiceNum,jdbcType=DOUBLE},
       </if>
       <if test="invoiceAmount != null">
         INVOICE_AMOUNT = #{invoiceAmount,jdbcType=DOUBLE},
@@ -555,6 +682,18 @@
       <if test="endSendDate != null">
         END_SEND_DATE = #{endSendDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="operator != null">
+        OPERATOR = #{operator,jdbcType=INTEGER},
+      </if>
+      <if test="operateDate != null">
+        OPERATE_DATE = #{operateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isLive != null">
+        IS_LIVE = #{isLive,jdbcType=INTEGER},
+      </if>
+      <if test="frIssueId != null">
+        FR_ISSUEID = #{frIssueId,jdbcType=VARCHAR},
+      </if>
       <if test="text1 != null">
         TEXT1 = #{text1,jdbcType=VARCHAR},
       </if>
@@ -579,13 +718,14 @@
       SPEC_TYP = #{specTyp,jdbcType=VARCHAR},
       CURRENCY_CODE = #{currencyCode,jdbcType=VARCHAR},
       EXCHANGE_RATE = #{exchangeRate,jdbcType=DOUBLE},
-      ORDER_NUM = #{orderNum,jdbcType=INTEGER},
+      ORDER_NUM = #{orderNum,jdbcType=DOUBLE},
+      ORDER_AMOUNT = #{orderAmount,jdbcType=DOUBLE},
       AGENCY_AMOUNT = #{agencyAmount,jdbcType=DOUBLE},
       BUSINESS_NO = #{businessNo,jdbcType=VARCHAR},
       BUSINESS_DATE = #{businessDate,jdbcType=TIMESTAMP},
-      SEND_NUM = #{sendNum,jdbcType=INTEGER},
+      SEND_NUM = #{sendNum,jdbcType=DOUBLE},
       SEND_AMOUNT = #{sendAmount,jdbcType=DOUBLE},
-      INVOICE_NUM = #{invoiceNum,jdbcType=INTEGER},
+      INVOICE_NUM = #{invoiceNum,jdbcType=DOUBLE},
       INVOICE_AMOUNT = #{invoiceAmount,jdbcType=DOUBLE},
       PAYLIBARY_AMOUNT = #{paylibaryAmount,jdbcType=DOUBLE},
       SPECIAL_AMOUNT = #{specialAmount,jdbcType=DOUBLE},
@@ -612,6 +752,10 @@
       TRADE = #{trade,jdbcType=VARCHAR},
       PLIN = #{plin,jdbcType=VARCHAR},
       END_SEND_DATE = #{endSendDate,jdbcType=TIMESTAMP},
+      OPERATOR = #{operator,jdbcType=INTEGER}, 
+      OPERATE_DATE = #{operateDate,jdbcType=TIMESTAMP},
+      IS_LIVE = #{isLive,jdbcType=INTEGER},
+      FR_ISSUEID = #{frIssueId,jdbcType=VARCHAR},
       TEXT1 = #{text1,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=VARCHAR}
   </update>
