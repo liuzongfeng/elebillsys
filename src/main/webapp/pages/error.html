@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"> 
+	<title>Bootstrap 实例 - 超大屏幕（Jumbotron）</title>
+	<link href="../bootstrap/css/bootstrap.css" rel="stylesheet">
+	<script src="../js/jquery-3.2.1.min.js"></script>
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+<body>
+
+<div id="errorId" class="jumbotron">
+	<div class="container">
+		<h1>{{errorStatus}}错误页面！</h1>
+		<p>{{errorMessage}}</p>
+		<p><a href="index.html" class="btn btn-primary btn-lg" role="button">
+			返回首页</a>
+		</p>
+	</div>
+</div>
+<script type="text/javascript">
+
+	$(function(){
+		
+		var errorData = {
+				errorStatus : "",
+				errorMessage : ""
+		}
+		
+		var errorVM = new Vue({
+			el : "#errorId",
+			data : errorData,
+			methods : {
+				
+			}
+		});
+		
+		function GetQueryString(name)
+		{
+		     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+		     var r = window.location.search.substr(1).match(reg);
+		     if(r!=null)return  unescape(r[2]); return null;
+		}
+		errorVM.errorStatus = "";
+		errorVM.errorMessage = "";
+		errorVM.errorStatus = GetQueryString("status");
+		errorVM.errorMessage = decodeURI(GetQueryString("message"));
+		
+		
+	});
+</script>
+</body>
+</html>

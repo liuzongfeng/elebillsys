@@ -6,14 +6,26 @@ import rest.mybatis.model.eBillModel.EbRebateT;
 
 public interface EbRebateTMapper {
 	
-	
+	/**
+     * @author 刘宗峰
+     * @param list
+     * @return
+     */
+    int updateBatch(List list);
+	/**
+	 * @author 刘宗峰
+	 * @TODO 查询对象集合
+	 * @param issueId
+	 * @return
+	 */
+	List<EbRebateT> searchListByIssueId(String issueId);
 	/**
 	 * @author 刘宗峰
 	 * @TODO 根据期数id 查询应收净额
 	 * @param issueId
 	 * @return
 	 */
-	int searchByIssueId(String issueId);
+	int searchCountByIssueId(String issueId);
 	/**
      * @author 刘宗峰
      * @TODO 批量保存数据

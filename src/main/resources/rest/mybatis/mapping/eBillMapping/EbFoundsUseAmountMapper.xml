@@ -69,12 +69,21 @@
     from EB_FOUNDS_USE_AMOUNT
     where ID = #{id,jdbcType=VARCHAR}
   </select>
-  <select id="searchByIssueId" parameterType="java.lang.String" resultType="java.lang.Integer">
+  <!-- 查询集合 -->
+  <select id="searchListByIssueId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    
+    select 
+    <include refid="Base_Column_List" />
+    from EB_FOUNDS_USE_AMOUNT
+    where IS_LIVE = 1 and FR_ISSUE_ID = #{issueId,jdbcType=VARCHAR}
+  </select>
+  <!-- 查询数量 -->
+  <select id="searchCountByIssueId" parameterType="java.lang.String" resultType="java.lang.Integer">
     
     select 
     count(ID)
     from EB_FOUNDS_USE_AMOUNT
-    where FR_ISSUE_ID = #{issueId,jdbcType=VARCHAR}
+    where IS_LIVE = 1 and FR_ISSUE_ID = #{issueId,jdbcType=VARCHAR}
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
@@ -418,6 +427,32 @@
       </if>
     </trim>
   </insert>
+  
+  <!-- 批量更新 -->
+  <update id="updateBatch" parameterType="java.util.List">
+        update EB_FOUNDS_USE_AMOUNT
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="OPERATOR = case" suffix="end,">
+                 <foreach collection="list" item="item" index="index">
+                  	when ID=#{item.id} then #{item.operator,jdbcType=VARCHAR}
+                 </foreach>
+            </trim>
+            <trim prefix="OPERATE_DATE = case" suffix="end,">
+                 <foreach collection="list" item="item" index="index">
+                  	when ID=#{item.id} then #{item.operateDate,jdbcType=TIMESTAMP}
+                 </foreach>
+            </trim>
+            <trim prefix="IS_LIVE = case" suffix="end,">
+                 <foreach collection="list" item="item" index="index">
+                  	when ID=#{item.id} then #{item.isLive,jdbcType=INTEGER}
+                 </foreach>
+            </trim>
+        </trim>
+        where ID in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.id,jdbcType=VARCHAR}
+        </foreach>
+    </update>
   <update id="updateByPrimaryKeySelective" parameterType="rest.mybatis.model.eBillModel.EbFoundsUseAmount">
     <!--
       WARNING - @mbggenerated
