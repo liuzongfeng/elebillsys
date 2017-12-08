@@ -281,6 +281,7 @@
 		      	  		turnPage = (turnPage - 0) <=  testVue_vm.pages ? (turnPage - 0) : testVue_vm.pages;
 		      	  		if(turnPage == 0){turnPage = 1;}
 	      	  			$(event.target).val(turnPage);
+	      	  			event.preventDefault ? event.preventDefault() : (event.returnValue = false);
 	      	  			queryListByPage(turnPage);
 	      	  		}
 	      	  	},
@@ -452,8 +453,8 @@
       	  		},
 	      	  	searchIssueByName_kd_fn : function(event){
 		      	  	if(event.keyCode == 13){
-	      	  			var turnPage = $(event.target).val();
-		      	  		
+		      	  		//阻止提交单或刷新整个页面操作
+		      	  		event.preventDefault ? event.preventDefault() : (event.returnValue = false);
 	      	  			queryListByPage(1);
 	      	  		}
 	      	  	},
