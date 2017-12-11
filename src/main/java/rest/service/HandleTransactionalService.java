@@ -9,18 +9,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import rest.config.LZFDS;
 import rest.mybatis.dao.eBillDao.AdvancesReceivedMapper;
 import rest.mybatis.dao.eBillDao.EbFoundsUseAmountMapper;
 import rest.mybatis.dao.eBillDao.EbNetAmountMapper;
 import rest.mybatis.dao.eBillDao.EbRebateTMapper;
 import rest.mybatis.dao.eBillDao.EbSalesStatisticsTMapper;
 import rest.mybatis.dao.eBillDao.EbUnrebateTMapper;
+import rest.mybatis.dao.misDao.UsertMapper;
 import rest.mybatis.model.eBillModel.AdvancesReceived;
 import rest.mybatis.model.eBillModel.EbFoundsUseAmount;
 import rest.mybatis.model.eBillModel.EbNetAmount;
 import rest.mybatis.model.eBillModel.EbRebateT;
 import rest.mybatis.model.eBillModel.EbSalesStatisticsT;
 import rest.mybatis.model.eBillModel.EbUnrebateT;
+import rest.mybatis.model.misModel.Usert;
 import rest.utils.MyException;
 
 @Service
@@ -38,6 +41,13 @@ public class HandleTransactionalService {
 	private EbSalesStatisticsTMapper ebSalesStatisticsTMapper;        //销售业务统计
 	@Autowired
 	private EbFoundsUseAmountMapper ebFoundsUseAmountMapper;          //资金占用
+	@Autowired
+	private UsertMapper usertMapper;
+	
+	@LZFDS("misDS")
+	public Usert selectU(Integer uId){
+		return usertMapper.selectByPrimaryKey(uId);
+	}
 	
 	/**
 	 * 

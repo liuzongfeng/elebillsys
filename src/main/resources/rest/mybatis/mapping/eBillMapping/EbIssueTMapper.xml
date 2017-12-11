@@ -51,7 +51,7 @@
     <include refid="Base_Column_List" />
     from EB_ISSUE_T
     where ISSUE_IS_LIVE = 1
-    order by ISSUE_OPERATE_DATE desc
+    order by ISSUE_STATE asc, ISSUE_OPERATE_DATE desc
   </select>
   <!-- 根据参数查询期数 -->
   <select id="queryIssueByMap" resultMap="BaseResultMap"  >
@@ -68,7 +68,7 @@
     	</if>
     	
     </where> 
-    order by ISSUE_OPERATE_DATE desc
+    order by ISSUE_STATE ASC, ISSUE_OPERATE_DATE DESC
   </select>
   
   <!-- 分页查询期数list -->
@@ -83,7 +83,7 @@
     	</if>
     	
     </where> 
-    order by ISSUE_OPERATE_DATE desc
+    order by ISSUE_STATE ASC, ISSUE_OPERATE_DATE DESC
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
