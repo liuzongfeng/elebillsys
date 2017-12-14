@@ -1,9 +1,16 @@
 package rest.controller;
 
+import java.util.Collection;
+
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import rest.config.LZFDS;
 import rest.mybatis.dao.eBillDao.EbIssueTMapper;
@@ -11,7 +18,7 @@ import rest.mybatis.dao.misDao.UsertMapper;
 import rest.mybatis.model.eBillModel.EbIssueT;
 import rest.mybatis.model.misModel.Usert;
 
-@Controller
+@RestController
 public class UserController {
 
 	@Autowired
@@ -37,5 +44,21 @@ public class UserController {
 		
 		return  issue.getIssueName() + " hello world";
 	}
+	/**
+	 * 测试session中的取值
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/checkPermision")
+	public Collection<GrantedAuthority> checkPermision(HttpSession session){
+		
+		SecurityContext context = (SecurityContext)session.getAttribute("SPRING_SECURITY_CONTEXT");
+		User user = (User)context.getAuthentication().getPrincipal();
+		Collection<GrantedAuthority> authorities = user.getAuthorities();
+		
+		return authorities;
+	}
+	
+	
 	
 }

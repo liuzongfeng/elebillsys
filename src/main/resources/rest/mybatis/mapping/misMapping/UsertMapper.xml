@@ -117,6 +117,17 @@
     from UserT
     where User_ID = #{userId,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectByComNum" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+   
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from UserT
+    where User_Validity = 1 and COM_NUM = #{comNum,jdbcType=VARCHAR}
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     <!--
       WARNING - @mbggenerated

@@ -48,7 +48,17 @@ public class HandleTransactionalService {
 	public Usert selectU(Integer uId){
 		return usertMapper.selectByPrimaryKey(uId);
 	}
-	
+	/**
+	 * @author 刘宗峰
+	 * @TODO 查询人员
+	 * @param comNum
+	 * @return
+	 */
+	@LZFDS("misDS")
+	public Usert selectUByComNum(String comNum){
+		Usert u = usertMapper.selectByComNum(comNum);
+		return u;
+	}
 	/**
 	 * 
 	 * @param list : 要保存的集合
