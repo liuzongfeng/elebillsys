@@ -47,6 +47,27 @@
     from ADVANCES_RECEIVED
     where ID = #{id,jdbcType=VARCHAR}
   </select>
+  <!-- 分页查询期数list -->
+  <select id="queryListByPage" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from ADVANCES_RECEIVED
+    <where>
+    	ADVANCES_RECEIVED_IS_LIVE = 1
+    	<if test="worker != null"><!-- 职员、业务员  -->
+    	 	AND SALESMAN LIKE CONCAT(CONCAT('%',#{worker}),'%')
+    	</if>
+    	<if test="frIssueId != null"><!-- 期数id -->
+    	 	AND FR_ISSUE_ID = #{frIssueId,jdbcType=VARCHAR}
+    	</if>
+    	<if test="reconciliationObj != null"><!--  -->
+    	 	AND RECONCILIATION_OBJ LIKE CONCAT(CONCAT('%',#{reconciliationObj}),'%')
+    	</if>
+    	
+    	
+    </where> 
+    order by COLLECTION_DAYS 
+  </select>
   <select id="searchListByIssueId" parameterType="java.lang.String" resultMap="BaseResultMap">
     <!--
       WARNING - @mbggenerated
@@ -279,6 +300,14 @@
             #{item.id,jdbcType=VARCHAR}
         </foreach>
     </update>
+    <!-- 批量删除 -->
+  <delete id="deleteBatch" parameterType="java.util.List">
+        DELETE FROM ADVANCES_RECEIVED
+        where ID in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.id,jdbcType=VARCHAR}
+        </foreach>
+    </delete>
   
   <update id="updateByPrimaryKeySelective" parameterType="rest.mybatis.model.eBillModel.AdvancesReceived">
     <!--

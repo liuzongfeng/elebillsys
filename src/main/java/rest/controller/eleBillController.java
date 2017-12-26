@@ -10,12 +10,15 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -66,10 +69,16 @@ public class eleBillController {
 	private HandleTransactionalService handleTransactionalService;    //处理事务的service
 	//本地线程，保证文件类型，不会出现多线程并发问题，导致数据错乱
 	private MyThreadLocalTool<String> fileTypeThread= new MyThreadLocalTool<String>();
+	private MyThreadLocalTool<User> userThread= new MyThreadLocalTool<User>();
 	
 	@RequestMapping(value = "/uploadBillFile", method = RequestMethod.POST)
 	@ResponseBody
 	public String uploadBillFile(HttpServletRequest req,MultipartHttpServletRequest multiReq){
+		//获得当前登录用户信息
+		HttpSession session = req.getSession();
+		SecurityContext context = (SecurityContext)session.getAttribute("SPRING_SECURITY_CONTEXT");
+		User user = (User)context.getAuthentication().getPrincipal();
+		userThread.getTl().set(user);
 		//获得上传的文件
 		MultipartFile uploadfile = multiReq.getFile("upfile");
 		//期数开始时间 --保留数据
@@ -81,7 +90,6 @@ public class eleBillController {
 		//上传文件类别
 		String fileType  = req.getParameter("upfileType");
 		fileTypeThread.getTl().set(fileType);
-		
 		String fileName = uploadfile.getOriginalFilename();
 		String fileTail = getTail(fileName);
 		if(null != fileTail && fileTail.equals("xls")){
@@ -94,6 +102,8 @@ public class eleBillController {
 		}else{
 			
 		}
+		
+		
 		return fileTypeThread.getTl().get();
 	}
 	
@@ -242,25 +252,25 @@ public class eleBillController {
 				e.setOrderDate(CommonUtils.strToDate(getStr(r.getCell(10))));//订货日期
 				e.setIssuanceNo(getStr(r.getCell(11)));                      //发货单号
 				e.setIssuanceDate(CommonUtils.strToDate(getStr(r.getCell(12))));//发货日期
-				e.setOrderAmount(Double.parseDouble(getStr(r.getCell(13))));//订单金额
-				e.setInvoicedAmount(Double.parseDouble(null == getStr(r.getCell(14)) ? "0.0" : getStr(r.getCell(14))));//开票金额
-				e.setBackLibSum(Double.parseDouble(null == getStr(r.getCell(15)) ? "0.0" : getStr(r.getCell(15))));//回库销账金额
-				e.setRebateSum(Double.parseDouble(null == getStr(r.getCell(16)) ? "0.0" : getStr(r.getCell(16))));// 留利销账金额
-				e.setSpecialSum(Double.parseDouble(null == getStr(r.getCell(17)) ? "0.0" : getStr(r.getCell(17))));//特殊销账金额
-				e.setOrderAmount(Double.parseDouble(null == getStr(r.getCell(18)) ? "0.0" : getStr(r.getCell(18))));//订单留利金额
-				e.setReturnAmount(Double.parseDouble(null == getStr(r.getCell(19)) ? "0.0" : getStr(r.getCell(19))));//回款金额
-				e.setOrderDiscountSum(Double.parseDouble(null == getStr(r.getCell(20)) ? "0.0" : getStr(r.getCell(20))));//订单折后金额
-				e.setTotalAgencyAmount(Double.parseDouble(null == getStr(r.getCell(21)) ? "0.0" : getStr(r.getCell(21))));//代理金额合计
-				e.setSpecialOffer(Double.parseDouble(null == getStr(r.getCell(22)) ? "0.0" : getStr(r.getCell(22))));//特价
+				e.setOrderAmount(Double.parseDouble((getStrDouble(r.getCell(14)))));//订单金额
+				e.setInvoicedAmount(Double.parseDouble(getStrDouble(r.getCell(14))));//开票金额
+				e.setBackLibSum(Double.parseDouble(getStrDouble(r.getCell(15))));//回库销账金额
+				e.setRebateSum(Double.parseDouble(getStrDouble(r.getCell(16))));// 留利销账金额
+				e.setSpecialSum(Double.parseDouble(getStrDouble(r.getCell(17))));//特殊销账金额
+				e.setOrderAmount(Double.parseDouble(getStrDouble(r.getCell(18))));//订单留利金额
+				e.setReturnAmount(Double.parseDouble(getStrDouble(r.getCell(19))));//回款金额
+				e.setOrderDiscountSum(Double.parseDouble(getStrDouble(r.getCell(20))));//订单折后金额
+				e.setTotalAgencyAmount(Double.parseDouble(getStrDouble(r.getCell(21))));//代理金额合计
+				e.setSpecialOffer(Double.parseDouble(getStrDouble(r.getCell(22))));//特价
 				e.setPaymentDaysStart(CommonUtils.strToDate(getStr(r.getCell(23))));//账期起点日期
-				e.setAmountReceivable(Double.parseDouble(null == getStr(r.getCell(24)) ? "0.0" : getStr(r.getCell(24))));//应收余额
+				e.setAmountReceivable(Double.parseDouble(getStrDouble(r.getCell(24))));//应收余额
 				e.setPaymentDays(getStr(r.getCell(25)));//账期
-				e.setFoundsUseAmount(Double.parseDouble(null == getStr(r.getCell(26)) ? "0.0" : getStr(r.getCell(26))));//资金占用费金额
+				e.setFoundsUseAmount(Double.parseDouble(getStrDouble(r.getCell(26))));//资金占用费金额
 				e.setOrderRemarks(getStr(r.getCell(27)));//订单备注
 				e.setSalesman(getStr(r.getCell(28)));//业务员
 				e.setServiceTypeVarchar(getStr(r.getCell(29)));//业务类型字符串型
 				e.setCompany(getStr(r.getCell(30)));//公司
-				e.setOperator("3255");//数据操作人
+				e.setOperator(userThread.getTl().get().getUsername());//数据操作人
 				e.setOperateDate(new Date());//操作时间
 				e.setFrIssueId(issueId);//账单期数id
 				e.setIsLive(1);//是否作废：0作废，1未作废
@@ -281,25 +291,25 @@ public class eleBillController {
 				e.setOrderDate(CommonUtils.strToDate(c[10].getContents()));//订货日期
 				e.setIssuanceNo(c[11].getContents());                      //发货单号
 				e.setIssuanceDate(CommonUtils.strToDate(c[12].getContents()));//发货日期
-				e.setOrderAmount(Double.parseDouble(c[13].getContents()));//订单金额
-				e.setInvoicedAmount(Double.parseDouble(c[14].getContents()));//开票金额
-				e.setBackLibSum(Double.parseDouble(c[15].getType().toString().equals("Empty") ? "0.0" : c[15].getContents()));//回库销账金额
-				e.setRebateSum(Double.parseDouble(c[16].getContents()));// 留利销账金额
-				e.setSpecialSum(Double.parseDouble(c[17].getContents()));//特殊销账金额
-				e.setOrderAmount(Double.parseDouble(c[18].getContents()));//订单留利金额
-				e.setReturnAmount(Double.parseDouble(c[19].getContents()));//回款金额
-				e.setOrderDiscountSum(Double.parseDouble(c[20].getContents()));//订单折后金额
-				e.setTotalAgencyAmount(Double.parseDouble(c[21].getContents()));//代理金额合计
-				e.setSpecialOffer(Double.parseDouble(c[22].getContents()));//特价
+				e.setOrderAmount(Double.parseDouble(preHandleData(c[13])));//订单金额
+				e.setInvoicedAmount(Double.parseDouble(preHandleData(c[14])));//开票金额
+				e.setBackLibSum(Double.parseDouble(preHandleData(c[15])));//回库销账金额
+				e.setRebateSum(Double.parseDouble(preHandleData(c[16])));// 留利销账金额
+				e.setSpecialSum(Double.parseDouble(preHandleData(c[17])));//特殊销账金额
+				e.setOrderAmount(Double.parseDouble(preHandleData(c[18])));//订单留利金额
+				e.setReturnAmount(Double.parseDouble(preHandleData(c[19])));//回款金额
+				e.setOrderDiscountSum(Double.parseDouble(preHandleData(c[20])));//订单折后金额
+				e.setTotalAgencyAmount(Double.parseDouble(preHandleData(c[21])));//代理金额合计
+				e.setSpecialOffer(Double.parseDouble(preHandleData(c[22])));//特价
 				e.setPaymentDaysStart(CommonUtils.strToDate(c[23].getContents()));//账期起点日期
-				e.setAmountReceivable(Double.parseDouble(c[24].getContents()));//应收余额
+				e.setAmountReceivable(Double.parseDouble(preHandleData(c[24])));//应收余额
 				e.setPaymentDays(c[25].getContents());//账期
-				e.setFoundsUseAmount(Double.parseDouble(c[26].getContents()));//资金占用费金额
+				e.setFoundsUseAmount(Double.parseDouble(preHandleData(c[26])));//资金占用费金额
 				e.setOrderRemarks(c[27].getContents());//订单备注
 				e.setSalesman(c[28].getContents());//业务员
 				e.setServiceTypeVarchar(c[29].getContents());//业务类型字符串型
 				e.setCompany(c[30].getContents());//公司
-				e.setOperator("3255");//数据操作人
+				e.setOperator(userThread.getTl().get().getUsername());//数据操作人
 				e.setOperateDate(new Date());//操作时间
 				e.setFrIssueId(issueId);//账单期数id
 				e.setIsLive(1);//是否作废：0作废，1未作废
@@ -332,30 +342,30 @@ public class eleBillController {
 				e.setDataType(getStr(r.getCell(0))); //数据分类
 				e.setOrderNo(getStr(r.getCell(1))); // 销售订单编号
 				e.setOrderDetailNo(getStr(r.getCell(2))); //订单明细编号
-				e.setOrderLineNo(Integer.parseInt(getStr(r.getCell(3))));//订单行号
+				e.setOrderLineNo(Integer.parseInt(getStrDouble(r.getCell(3))));//订单行号
 				e.setOrderDate(CommonUtils.strToDate(getStr(r.getCell(4))));//订单日期
 				e.setPurchaseUnits(getStr(r.getCell(5)));//购货单位
 				e.setMaterialCode(getStr(r.getCell(6)));//物料编码
 				e.setMaterialName(getStr(r.getCell(7)));//物料名称
 				e.setSpecTyp(getStr(r.getCell(8)));//规格型号
 				e.setCurrencyCode(getStr(r.getCell(9)));//货币内码
-				e.setExchangeRate(Double.parseDouble(getStr(r.getCell(10)))); //汇率
-				e.setOrderNum(Double.parseDouble(getStr(r.getCell(11))));//订货数量
-				e.setOrderAmount(Double.parseDouble(getStr(r.getCell(12))));//订货金额
-				e.setAgencyAmount(Double.parseDouble(getStr(r.getCell(13)))); //代理金额
+				e.setExchangeRate(Double.parseDouble(getStrDouble(r.getCell(10)))); //汇率
+				e.setOrderNum(Double.parseDouble(getStrDouble(r.getCell(11))));//订货数量
+				e.setOrderAmount(Double.parseDouble(getStrDouble(r.getCell(12))));//订货金额
+				e.setAgencyAmount(Double.parseDouble(getStrDouble(r.getCell(13)))); //代理金额
 				e.setBusinessNo(getStr(r.getCell(14)));//业务单号
 				e.setBusinessDate(CommonUtils.strToDate(getStr(r.getCell(15))));//业务日期
-				e.setSendNum(Double.parseDouble(getStr(r.getCell(16))));//发货数量
-				e.setSendAmount(Double.parseDouble(getStr(r.getCell(17))));//发货金额
-				e.setInvoiceNum(Double.parseDouble(getStr(r.getCell(18))));//发票数量
-				e.setInvoiceAmount(Double.parseDouble(getStr(r.getCell(19))));//发票金额
-				e.setPaylibaryAmount(Double.parseDouble(getStr(r.getCell(20))));//回库销账金额
-				e.setSpecialAmount(Double.parseDouble(getStr(r.getCell(21))));//特殊销账金额
-				e.setRebateAmount(Double.parseDouble(getStr(r.getCell(22))));//留返利销账金额
-				e.setPaymentAmount(Double.parseDouble(getStr(r.getCell(23))));//回款销账金额
-				e.setPerformance(Double.parseDouble(getStr(r.getCell(24)))); //履约质保
-				e.setProfitAmount(Double.parseDouble(getStr(r.getCell(25))));//留利金额
-				e.setReceivableAmount(Double.parseDouble(getStr(r.getCell(26))));//应收余额
+				e.setSendNum(Double.parseDouble(getStrDouble(r.getCell(16))));//发货数量
+				e.setSendAmount(Double.parseDouble(getStrDouble(r.getCell(17))));//发货金额
+				e.setInvoiceNum(Double.parseDouble(getStrDouble(r.getCell(18))));//发票数量
+				e.setInvoiceAmount(Double.parseDouble(getStrDouble(r.getCell(19))));//发票金额
+				e.setPaylibaryAmount(Double.parseDouble(getStrDouble(r.getCell(20))));//回库销账金额
+				e.setSpecialAmount(Double.parseDouble(getStrDouble(r.getCell(21))));//特殊销账金额
+				e.setRebateAmount(Double.parseDouble(getStrDouble(r.getCell(22))));//留返利销账金额
+				e.setPaymentAmount(Double.parseDouble(getStrDouble(r.getCell(23))));//回款销账金额
+				e.setPerformance(Double.parseDouble(getStrDouble(r.getCell(24)))); //履约质保
+				e.setProfitAmount(Double.parseDouble(getStrDouble(r.getCell(25))));//留利金额
+				e.setReceivableAmount(Double.parseDouble(getStrDouble(r.getCell(26))));//应收余额
 				e.setShipperName(getStr(r.getCell(27)));//货主名称
 				e.setServiceType(getStr(r.getCell(28)));//业务类型
 				e.setReconciliationObj(getStr(r.getCell(29)));//对账对象
@@ -371,7 +381,7 @@ public class eleBillController {
 				e.setTrade(getStr(r.getCell(39)));//行业
 				e.setPlin(getStr(r.getCell(40)));//产品线
 				e.setEndSendDate(CommonUtils.strToDate(getStr(r.getCell(41))));//最后发货日期
-				e.setOperator(3255);//操作人
+				e.setOperator(Integer.parseInt(null == userThread.getTl().get().getUsername() ? "1":userThread.getTl().get().getUsername()));//操作人
 				e.setOperateDate(new Date());//操作时间
 				e.setIsLive(1);//是否有效：1有效，0无效；默认为1
 				e.setFrIssueId(issueId);//外键期数id
@@ -381,30 +391,30 @@ public class eleBillController {
 				e.setDataType(c[0].getContents()); //数据分类
 				e.setOrderNo(c[1].getContents()); // 销售订单编号
 				e.setOrderDetailNo(c[2].getContents()); //订单明细编号
-				e.setOrderLineNo(Integer.parseInt(c[3].getContents()));//订单行号
+				e.setOrderLineNo(Integer.parseInt(preHandleData(c[3])));//订单行号
 				e.setOrderDate(CommonUtils.strToDate(c[4].getContents()));//订单日期
 				e.setPurchaseUnits(c[5].getContents());//购货单位
 				e.setMaterialCode(c[6].getContents());//物料编码
 				e.setMaterialName(c[7].getContents());//物料名称
 				e.setSpecTyp(c[8].getContents());//规格型号
 				e.setCurrencyCode(c[9].getContents());//货币内码
-				e.setExchangeRate(Double.parseDouble(c[10].getContents())); //汇率
-				e.setOrderNum(Double.parseDouble(c[11].getContents()));//订货数量
-				e.setOrderAmount(Double.parseDouble(c[12].getContents()));//订货金额
-				e.setAgencyAmount(Double.parseDouble(c[13].getContents())); //代理金额
+				e.setExchangeRate(Double.parseDouble(preHandleData(c[10]))); //汇率
+				e.setOrderNum(Double.parseDouble(preHandleData(c[11])));//订货数量
+				e.setOrderAmount(Double.parseDouble(preHandleData(c[12])));//订货金额
+				e.setAgencyAmount(Double.parseDouble(preHandleData(c[13]))); //代理金额
 				e.setBusinessNo(c[14].getContents());//业务单号
 				e.setBusinessDate(CommonUtils.strToDate(c[15].getContents()));//业务日期
-				e.setSendNum(Double.parseDouble(c[16].getContents()));//发货数量
-				e.setSendAmount(Double.parseDouble(c[17].getContents()));//发货金额
-				e.setInvoiceNum(Double.parseDouble(c[18].getContents()));//发票数量
-				e.setInvoiceAmount(Double.parseDouble(c[19].getContents()));//发票金额
-				e.setPaylibaryAmount(Double.parseDouble(c[20].getContents()));//回库销账金额
-				e.setSpecialAmount(Double.parseDouble(c[21].getContents()));//特殊销账金额
-				e.setRebateAmount(Double.parseDouble(c[22].getContents()));//留返利销账金额
-				e.setPaymentAmount(Double.parseDouble(c[23].getContents()));//回款销账金额
-				e.setPerformance(Double.parseDouble(c[24].getContents())); //履约质保
-				e.setProfitAmount(Double.parseDouble(c[25].getContents()));//留利金额
-				e.setReceivableAmount(Double.parseDouble(c[26].getContents()));//应收余额
+				e.setSendNum(Double.parseDouble(preHandleData(c[16])));//发货数量
+				e.setSendAmount(Double.parseDouble(preHandleData(c[17])));//发货金额
+				e.setInvoiceNum(Double.parseDouble(preHandleData(c[18])));//发票数量
+				e.setInvoiceAmount(Double.parseDouble(preHandleData(c[19])));//发票金额
+				e.setPaylibaryAmount(Double.parseDouble(preHandleData(c[20])));//回库销账金额
+				e.setSpecialAmount(Double.parseDouble(preHandleData(c[21])));//特殊销账金额
+				e.setRebateAmount(Double.parseDouble(preHandleData(c[22])));//留返利销账金额
+				e.setPaymentAmount(Double.parseDouble(preHandleData(c[23])));//回款销账金额
+				e.setPerformance(Double.parseDouble(preHandleData(c[24]))); //履约质保
+				e.setProfitAmount(Double.parseDouble(preHandleData(c[25])));//留利金额
+				e.setReceivableAmount(Double.parseDouble(preHandleData(c[26])));//应收余额
 				e.setShipperName(c[27].getContents());//货主名称
 				e.setServiceType(c[28].getContents());//业务类型
 				e.setReconciliationObj(c[29].getContents());//对账对象
@@ -420,14 +430,14 @@ public class eleBillController {
 				e.setTrade(c[39].getContents());//行业
 				e.setPlin(c[40].getContents());//产品线
 				e.setEndSendDate(CommonUtils.strToDate(c[41].getContents()));//最后发货日期
-				e.setOperator(3255);//操作人
+				e.setOperator(Integer.parseInt(null == userThread.getTl().get().getUsername() ? "1":userThread.getTl().get().getUsername()));//操作人
 				e.setOperateDate(new Date());//操作时间
 				e.setIsLive(1);//是否有效：1有效，0无效；默认为1
 				e.setFrIssueId(issueId);//外键期数id
 			}
 		} catch (NumberFormatException e1) {
 			e1.printStackTrace();
-			throw new MyException("解析销售业务统计总表文件");
+			throw new MyException("解析销售业务统计总表文件,失败！");
 		}
 		return e;
 	}
@@ -455,23 +465,23 @@ public class eleBillController {
 				ebNetAmount.setConsignorName(getStr(r.getCell(5)));                              //货主名称
 				ebNetAmount.setSystemItem(getStr(r.getCell(6)));                                 //系统项目
 				ebNetAmount.setOrderDate(CommonUtils.strToDate(getStr(r.getCell(7))));           //订单日期
-				ebNetAmount.setOrderSum(Double.parseDouble(getStr(r.getCell(8))));               //订单金额
-				ebNetAmount.setReceivedPaymentsSum(Double.parseDouble(getStr(r.getCell(9))));    //回款金额
+				ebNetAmount.setOrderSum(Double.parseDouble(getStrDouble(r.getCell(8))));               //订单金额
+				ebNetAmount.setReceivedPaymentsSum(Double.parseDouble(getStrDouble(r.getCell(9))));    //回款金额
 				ebNetAmount.setPerformanceGuarantee(getStr(r.getCell(10)));                      //履约质保
-				ebNetAmount.setBackLibSum(Double.parseDouble(getStr(r.getCell(11))));            //回库销账金额
-				ebNetAmount.setSpecialHandingSum(Double.parseDouble(getStr(r.getCell(12))));     //特殊处理金额
-				ebNetAmount.setUndeliverySum(Double.parseDouble(getStr(r.getCell(13))));         //未发货金额
-				ebNetAmount.setUnsettleAccountsSum(Double.parseDouble(getStr(r.getCell(14))));   //未结账款余额
+				ebNetAmount.setBackLibSum(Double.parseDouble(getStrDouble(r.getCell(11))));            //回库销账金额
+				ebNetAmount.setSpecialHandingSum(Double.parseDouble(getStrDouble(r.getCell(12))));     //特殊处理金额
+				ebNetAmount.setUndeliverySum(Double.parseDouble(getStrDouble(r.getCell(13))));         //未发货金额
+				ebNetAmount.setUnsettleAccountsSum(Double.parseDouble(getStrDouble(r.getCell(14))));   //未结账款余额
 				ebNetAmount.setInvoiceClassfication(getStr(r.getCell(15)));    //发票分类
 				ebNetAmount.setInvoiceNo(getStr(r.getCell(16)));                                 //发票单号
-				ebNetAmount.setFinishedInvoiceSum(Double.parseDouble(getStr(r.getCell(17))));    //已开发票金额
-				ebNetAmount.setAgencyAmount(Double.parseDouble(getStr(r.getCell(18))));          //代理金额
-				ebNetAmount.setProfitAmount(Double.parseDouble(getStr(r.getCell(19))));          //留利金额
+				ebNetAmount.setFinishedInvoiceSum(Double.parseDouble(getStrDouble(r.getCell(17))));    //已开发票金额
+				ebNetAmount.setAgencyAmount(Double.parseDouble(getStrDouble(r.getCell(18))));          //代理金额
+				ebNetAmount.setProfitAmount(Double.parseDouble(getStrDouble(r.getCell(19))));          //留利金额
 				ebNetAmount.setCheckedAccountRemarks(getStr(r.getCell(20)));                     //对账核实备注
 				ebNetAmount.setFinalDeliveryDate(CommonUtils.strToDate(getStr(r.getCell(21))));  //最终发货日期
 				ebNetAmount.setCurrency(getStr(r.getCell(22)));                                  //货币
-				ebNetAmount.setExchangeRate(Double.parseDouble(getStr(r.getCell(23))));          //汇率
-				ebNetAmount.setNetAmountOperator(3255);                                          //应收净额数据操作人
+				ebNetAmount.setExchangeRate(Double.parseDouble(getStrDouble(r.getCell(23))));          //汇率
+				ebNetAmount.setNetAmountOperator(Integer.parseInt(null == userThread.getTl().get().getUsername() ? "1":userThread.getTl().get().getUsername()));                                          //应收净额数据操作人
 				ebNetAmount.setNetAmountOperateDate(new Date());                                 //应收净额操作时间
 				ebNetAmount.setFrIssueId(issueId);                                               //账单期数id
 				ebNetAmount.setNetAmountIsLive(1);                                               //应收净额是否作废：1有效，0作废
@@ -487,23 +497,23 @@ public class eleBillController {
 				ebNetAmount.setConsignorName(c[5].getContents());                              //货主名称
 				ebNetAmount.setSystemItem(c[6].getContents());                                 //系统项目
 				ebNetAmount.setOrderDate(CommonUtils.strToDate(c[7].getContents()));           //订单日期
-				ebNetAmount.setOrderSum(Double.parseDouble(c[8].getContents()));               //订单金额
-				ebNetAmount.setReceivedPaymentsSum(Double.parseDouble(c[9].getContents()));    //回款金额
+				ebNetAmount.setOrderSum(Double.parseDouble(preHandleData(c[8])));               //订单金额
+				ebNetAmount.setReceivedPaymentsSum(Double.parseDouble(preHandleData(c[9])));    //回款金额
 				ebNetAmount.setPerformanceGuarantee(c[10].getContents());                      //履约质保
-				ebNetAmount.setBackLibSum(Double.parseDouble(c[11].getContents()));            //回库销账金额
-				ebNetAmount.setSpecialHandingSum(Double.parseDouble(c[12].getContents()));     //特殊处理金额
-				ebNetAmount.setUndeliverySum(Double.parseDouble(c[13].getContents()));         //未发货金额
-				ebNetAmount.setUnsettleAccountsSum(Double.parseDouble(c[14].getContents()));   //未结账款余额
+				ebNetAmount.setBackLibSum(Double.parseDouble(preHandleData(c[11])));            //回库销账金额
+				ebNetAmount.setSpecialHandingSum(Double.parseDouble(preHandleData(c[12])));     //特殊处理金额
+				ebNetAmount.setUndeliverySum(Double.parseDouble(preHandleData(c[13])));         //未发货金额
+				ebNetAmount.setUnsettleAccountsSum(Double.parseDouble(preHandleData(c[14])));   //未结账款余额
 				ebNetAmount.setInvoiceClassfication(c[15].getContents());    //发票分类
 				ebNetAmount.setInvoiceNo(c[16].getContents());                                 //发票单号
-				ebNetAmount.setFinishedInvoiceSum(Double.parseDouble(c[17].getContents()));    //已开发票金额
-				ebNetAmount.setAgencyAmount(Double.parseDouble(c[18].getContents()));          //代理金额
-				ebNetAmount.setProfitAmount(Double.parseDouble(c[19].getContents()));          //留利金额
+				ebNetAmount.setFinishedInvoiceSum(Double.parseDouble(preHandleData(c[17])));    //已开发票金额
+				ebNetAmount.setAgencyAmount(Double.parseDouble(preHandleData(c[18])));          //代理金额
+				ebNetAmount.setProfitAmount(Double.parseDouble(preHandleData(c[19])));          //留利金额
 				ebNetAmount.setCheckedAccountRemarks(c[20].getContents());                     //对账核实备注
 				ebNetAmount.setFinalDeliveryDate(CommonUtils.strToDate(c[21].getContents()));  //最终发货日期
 				ebNetAmount.setCurrency(c[22].getContents());                                  //货币
-				ebNetAmount.setExchangeRate(Double.parseDouble(c[23].getContents()));          //汇率
-				ebNetAmount.setNetAmountOperator(3255);                                          //应收净额数据操作人
+				ebNetAmount.setExchangeRate(Double.parseDouble(preHandleData(c[23])));          //汇率
+				ebNetAmount.setNetAmountOperator(Integer.parseInt(null == userThread.getTl().get().getUsername() ? "1":userThread.getTl().get().getUsername()));                                          //应收净额数据操作人
 				ebNetAmount.setNetAmountOperateDate(new Date());                                 //应收净额操作时间
 				ebNetAmount.setFrIssueId(issueId);                                               //账单期数id
 				ebNetAmount.setNetAmountIsLive(1);                                               //应收净额是否作废：1有效，0作废
@@ -538,11 +548,11 @@ public class eleBillController {
 				ebRebateT.setSalesOrderNo(getStr(r.getCell(3)));                        //销售订单编号
 				ebRebateT.setRebateAbstract(getStr(r.getCell(4)));                      //摘要
 				ebRebateT.setConsignorName(getStr(r.getCell(5)));                       //货主名称
-				ebRebateT.setRebateSum(Double.parseDouble(null == getStr(r.getCell(6)) ? "0.00" : getStr(r.getCell(6))));       //留返利金额
-				ebRebateT.setRebateCheckSum(Double.parseDouble(getStr(r.getCell(7))));  //留返利核销金额
+				ebRebateT.setRebateSum(Double.parseDouble(getStrDouble(r.getCell(6))));       //留返利金额
+				ebRebateT.setRebateCheckSum(Double.parseDouble(getStrDouble(r.getCell(7))));  //留返利核销金额
 				ebRebateT.setRebateProperty(getStr(r.getCell(8)));                      //留返利性质
 				ebRebateT.setRebateRemarks(getStr(r.getCell(9)));                       //备注
-				ebRebateT.setRebateOperator(3255);                                      //留返利表数据操作人
+				ebRebateT.setRebateOperator(Integer.parseInt(null == userThread.getTl().get().getUsername() ? "1":userThread.getTl().get().getUsername()));                                      //留返利表数据操作人
 				ebRebateT.setRebateOperatDate(new Date());                              //留返利数据操作时间
 				ebRebateT.setRebateIsLive(1);                                           //留返利数据是否作废：0作废，1有效
 				ebRebateT.setFrIssueId(issueId);                                        //账单期数id,外键
@@ -555,11 +565,11 @@ public class eleBillController {
 				ebRebateT.setSalesOrderNo(c[3].getContents());                        //销售订单编号
 				ebRebateT.setRebateAbstract(c[4].getContents());                      //摘要
 				ebRebateT.setConsignorName(c[5].getContents());                       //货主名称
-				ebRebateT.setRebateSum(Double.parseDouble(null == c[6] ? "0.00" : c[6].getContents()));       //留返利金额
-				ebRebateT.setRebateCheckSum(Double.parseDouble(c[7].getContents()));  //留返利核销金额
+				ebRebateT.setRebateSum(Double.parseDouble(preHandleData(c[6])));       //留返利金额
+				ebRebateT.setRebateCheckSum(Double.parseDouble(preHandleData(c[7])));  //留返利核销金额
 				ebRebateT.setRebateProperty(c[8].getContents());                      //留返利性质
 				ebRebateT.setRebateRemarks(c[9].getContents());                       //备注
-				ebRebateT.setRebateOperator(3255);                                      //留返利表数据操作人
+				ebRebateT.setRebateOperator(Integer.parseInt(null == userThread.getTl().get().getUsername() ? "1":userThread.getTl().get().getUsername()));                                      //留返利表数据操作人
 				ebRebateT.setRebateOperatDate(new Date());                              //留返利数据操作时间
 				ebRebateT.setRebateIsLive(1);                                           //留返利数据是否作废：0作废，1有效
 				ebRebateT.setFrIssueId(issueId);                                        //账单期数id,外键
@@ -590,9 +600,9 @@ public class eleBillController {
 				unrebate.setId(uuid);                                                   //主键uuid
 				unrebate.setReconciliationObjNo(getStr(r.getCell(0)));                  //对账对象编号
 				unrebate.setReconciliationObjName(getStr(r.getCell(1)));                //对账对象名称
-				unrebate.setRebateNetAmount(Double.parseDouble(null == getStr(r.getCell(2)) ? "0.0" : getStr(r.getCell(2))));  //留返利净额
+				unrebate.setRebateNetAmount(Double.parseDouble(getStrDouble(r.getCell(2))));  //留返利净额
 				unrebate.setFrIssueId(issueId);                                         //账单期数id
-				unrebate.setUnrebateOperator(3255);                                     //未核销留返利表操作人
+				unrebate.setUnrebateOperator(Integer.parseInt(null == userThread.getTl().get().getUsername() ? "1":userThread.getTl().get().getUsername()));                                     //未核销留返利表操作人
 				unrebate.setUnrebateOperateDate(new Date());                            //操作人操作时间
 				unrebate.setUnrebateIsLive(1);                                          //未核销留返利是否作废 :1 未作废，0作废，默认为1
 				
@@ -600,9 +610,9 @@ public class eleBillController {
 				unrebate.setId(uuid);                                                   //主键uuid
 				unrebate.setReconciliationObjNo(c[0].getContents());                    //对账对象编号
 				unrebate.setReconciliationObjName(c[1].getContents());                  //对账对象名称
-				unrebate.setRebateNetAmount(Double.parseDouble(c[2].getType().toString().equals("Empty") ?  "0.0" : c[2].getContents()));    //对账对象名称
+				unrebate.setRebateNetAmount(Double.parseDouble(preHandleData(c[2])));    //对账对象名称
 				unrebate.setFrIssueId(issueId);                                         //账单期数id
-				unrebate.setUnrebateOperator(3255);                                     //未核销留返利表操作人
+				unrebate.setUnrebateOperator(Integer.parseInt(null == userThread.getTl().get().getUsername() ? "1":userThread.getTl().get().getUsername()));                                     //未核销留返利表操作人
 				unrebate.setUnrebateOperateDate(new Date());                            //操作人操作时间
 				unrebate.setUnrebateIsLive(1);                                          //未核销留返利是否作废 :1 未作废，0作废，默认为1
 				
@@ -634,14 +644,14 @@ public class eleBillController {
 				ar.setCollectionNumber(getStr(r.getCell(2)));//收款单号
 				ar.setCollectionDays(CommonUtils.strToDate(getStr(r.getCell(3))));//收款日期
 				ar.setCurrency(getStr(r.getCell(4)));//币别
-				ar.setExchangeRate(Double.parseDouble(getStr(r.getCell(5))));//汇率
+				ar.setExchangeRate(Double.parseDouble(getStrDouble(r.getCell(5))));//汇率
 				ar.setConsumer(getStr(r.getCell(6)));//客户
 				ar.setSalesman(getStr(r.getCell(7)));//业务员
 				ar.setDepartment(getStr(r.getCell(8)));//部门
 				ar.setAdvancesReceivedAbstract(getStr(r.getCell(9)));//摘要
-				ar.setCollectionSum(Double.parseDouble(getStr(r.getCell(10))));//收款金额
-				ar.setUncheckedSum(Double.parseDouble(getStr(r.getCell(11))));//未核销金额
-				ar.setAdvancesReceivedOperator(null);//操作人
+				ar.setCollectionSum(Double.parseDouble(getStrDouble(r.getCell(10))));//收款金额
+				ar.setUncheckedSum(Double.parseDouble(getStrDouble(r.getCell(11))));//未核销金额
+				ar.setAdvancesReceivedOperator(userThread.getTl().get().getUsername());//操作人
 				ar.setAdvancesReceivedOperateDate(new Date());//操作时间
 				ar.setFrIssueId(issueId);//期数ID
 				ar.setAdvancesReceivedIsLive(1);//是否删除
@@ -652,14 +662,14 @@ public class eleBillController {
 				ar.setCollectionNumber(c[2].getContents());//收款单号
 				ar.setCollectionDays(CommonUtils.strToDate(c[3].getContents()));//收款日期
 				ar.setCurrency(c[4].getContents());//币别
-				ar.setExchangeRate(Double.parseDouble(c[5].getContents()));//汇率
+				ar.setExchangeRate(Double.parseDouble(preHandleData(c[5])));//汇率
 				ar.setConsumer(c[6].getContents());//客户
 				ar.setSalesman(c[7].getContents());//业务员
 				ar.setDepartment(c[8].getContents());//部门
 				ar.setAdvancesReceivedAbstract(c[9].getContents());//摘要
-				ar.setCollectionSum(Double.parseDouble(c[10].getContents()));//收款金额
-				ar.setUncheckedSum(Double.parseDouble(c[11].getContents()));//未核销金额
-				ar.setAdvancesReceivedOperator(null);//操作人
+				ar.setCollectionSum(Double.parseDouble(preHandleData(c[10])));//收款金额
+				ar.setUncheckedSum(Double.parseDouble(preHandleData(c[11])));//未核销金额
+				ar.setAdvancesReceivedOperator(userThread.getTl().get().getUsername());//操作人
 				ar.setAdvancesReceivedOperateDate(new Date());//操作时间
 				ar.setFrIssueId(issueId);//期数ID
 				ar.setAdvancesReceivedIsLive(1);//是否删除
@@ -702,7 +712,40 @@ public class eleBillController {
         }
         return null;
     }
-	
+    @SuppressWarnings("static-access")
+    private String getStrDouble(XSSFCell xssfRow) {
+    	if(null == xssfRow || "".equals(xssfRow)){
+    		return "0.0";
+    	}
+        if (xssfRow.getCellType() == xssfRow.CELL_TYPE_STRING) {
+            return null == xssfRow.getStringCellValue() ? "0.0" : xssfRow.getStringCellValue();
+        } else if (xssfRow.getCellType() == xssfRow.CELL_TYPE_NUMERIC) {
+            return String.valueOf(xssfRow.getNumericCellValue());
+        } else if(xssfRow.getCellType() == xssfRow.CELL_TYPE_BOOLEAN){
+            return String.valueOf(xssfRow.getBooleanCellValue());
+        } else if(xssfRow.getCellType() == xssfRow.CELL_TYPE_BLANK){
+        	return "0.0";
+        } else if(xssfRow.getCellType() == xssfRow.CELL_TYPE_FORMULA){
+        	return xssfRow.getRawValue();
+        }else{
+        	 return "0.0";
+        }
+       
+    }
+	/**
+	 * @author 刘宗峰
+	 * @TODO 预处理xls double数据
+	 * @param c
+	 * @return
+	 */
+    private String preHandleData(Cell c){
+    	
+    	if(null != c && (c.getType().toString().equals("Empty") || null == c.getContents() || "".equals(c.getContents()))){
+    		return "0.0";
+    	}else{
+    		return c.getContents();
+    	}
+    }
 	/**
 	 * TODO 获得文件后缀
 	 * @param fileName
@@ -716,7 +759,10 @@ public class eleBillController {
 			return fileName.substring(fileName.lastIndexOf(".")+1, fileName.length());
 		}
 	}
-	
+	/**
+	 * @author 刘宗峰
+	 * @return
+	 */
 	@RequestMapping(value = "/searchEbIssue", method = RequestMethod.GET)
 	@ResponseBody
 	public Map<String,Object> searchEbIssueUnpublished(){

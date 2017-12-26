@@ -37,6 +37,16 @@
     from EB_ISSUE_T
     where ISSUE_IS_LIVE = 1 and ID = #{id,jdbcType=VARCHAR}
   </select>
+  <!-- 根据期数名称查询期数 -->
+  <select id="searchIssueByParam" resultMap="BaseResultMap" parameterType="java.lang.String" >
+   
+    select 
+    <include refid="Base_Column_List" />
+    
+    from EB_ISSUE_T
+    where ISSUE_IS_LIVE = 1 and ISSUE_NAME like CONCAT(CONCAT('%',#{param_s}),'%')
+  </select>
+  <!-- 查询未关闭期数 -->
   <select id="searchUnClosed" resultMap="BaseResultMap"  >
     
     select 

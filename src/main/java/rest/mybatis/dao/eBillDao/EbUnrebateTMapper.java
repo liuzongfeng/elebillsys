@@ -8,13 +8,16 @@ import rest.mybatis.model.eBillModel.EbUnrebateT;
  * @author 刘宗峰
  *
  */
-public interface EbUnrebateTMapper {
+public interface EbUnrebateTMapper extends EleBillMapper{
 	
+	@Override
+	int deleteBatch(List list);
 	/**
      * @author 刘宗峰
      * @param list
      * @return
      */
+	@Override
     int updateBatch(List list);
 	/**
 	 * @author 刘宗峰
@@ -51,6 +54,7 @@ public interface EbUnrebateTMapper {
      * @param list
      * @return
      */
+    @Override
     int insertBatch(List list);
 
     /**

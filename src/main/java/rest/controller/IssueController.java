@@ -1,13 +1,14 @@
 package rest.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,11 +44,32 @@ public class IssueController {
 		}
 		return null;
 	}
+	@RequestMapping(value = "/searchIssueByParam", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Map> searchIssueByParam(String param_s){
+		
+		List<EbIssueT> issues = ebIssueTMapper.searchIssueByParam(param_s);
+		if(null != issues && issues.size() >0){
+			List<Map> l = new ArrayList<Map>();
+			for(EbIssueT e : issues){
+				Map<String,String> m = new HashMap<String,String>();
+				m.put("id", e.getId());
+				m.put("text", e.getIssueName()+"期");
+				m.put("value", e.getId());
+				l.add(m);
+			}
+			return l;
+		}else{
+			return null;
+		}
+	}
+	
 	/**
 	 * @author 刘宗峰
 	 * TODO 分页查询
 	 * @return
 	 */
+	@PreAuthorize("hasRole('ISSUE_LOAD')")
 	@RequestMapping(value = "/queryListByPage", method = RequestMethod.POST)
 	@ResponseBody
 	public <T> PageInfo queryListByPage(@RequestBody Map<String,T> map){
@@ -56,6 +78,11 @@ public class IssueController {
 		
 		return commonUtils.queryListByPage(map, ebIssueTMapper);
 	}
+	/**
+	 * @author 刘宗峰
+	 * @param issueId
+	 * @return
+	 */
 	@RequestMapping(value = "/delIssueById", method = RequestMethod.GET)
 	@ResponseBody
 	public int delIssueById(String issueId){

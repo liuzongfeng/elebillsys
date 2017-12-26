@@ -20,9 +20,17 @@
             <groupId>org.springframework.session</groupId>
             <artifactId>spring-session</artifactId>
     </dependency>
+    <!-- <dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-actuator</artifactId>
+	</dependency> -->
     <dependency>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-security</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-cache</artifactId>
 	</dependency>
 	<dependency>
 		<groupId>org.springframework.boot</groupId>
@@ -106,6 +114,13 @@
 		<groupId>mysql</groupId>
 		<artifactId>mysql-connector-java</artifactId>
 	</dependency>
+	<!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
+	<!-- <dependency>
+	    <groupId>com.alibaba</groupId>
+	    <artifactId>druid</artifactId>
+	    <version>1.1.6</version>
+	</dependency> -->
+
 	<!-- commonsfileupload -->
 		<!-- https://mvnrepository.com/artifact/com.liferay/org.apache.commons.fileupload -->
 		<dependency>

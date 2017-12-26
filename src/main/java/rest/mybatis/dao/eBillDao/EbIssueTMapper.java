@@ -10,6 +10,13 @@ import rest.mybatis.model.eBillModel.EbIssueT;
  *
  */
 public interface EbIssueTMapper extends EleBillMapper{
+	/**
+	 * @author 刘宗峰
+	 * @TODO 根据参数查询期数
+	 * @param param_s
+	 * @return
+	 */
+	public List<EbIssueT> searchIssueByParam(String param_s);
 	
 	/**
 	 * @author 刘宗峰

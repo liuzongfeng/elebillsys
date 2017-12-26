@@ -1,11 +1,20 @@
 package rest.mybatis.dao.eBillDao;
 
 import java.util.List;
+import java.util.Map;
 
 import rest.mybatis.model.eBillModel.EbRebateT;
-
-public interface EbRebateTMapper {
+/**
+ * 
+ * @author 刘宗峰
+ *
+ */
+public interface EbRebateTMapper extends EleBillMapper {
 	
+	@Override
+	int deleteBatch(List list);
+	@Override
+	List<EbRebateT> queryListByPage(Map paramMap);
 	/**
      * @author 刘宗峰
      * @param list

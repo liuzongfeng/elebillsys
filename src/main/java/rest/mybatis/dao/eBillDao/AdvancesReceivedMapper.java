@@ -1,11 +1,16 @@
 package rest.mybatis.dao.eBillDao;
 
 import java.util.List;
+import java.util.Map;
 
 import rest.mybatis.model.eBillModel.AdvancesReceived;
 
-public interface AdvancesReceivedMapper {
+public interface AdvancesReceivedMapper extends EleBillMapper{
 	
+	@Override
+	int deleteBatch(List list);
+	@Override
+	List<AdvancesReceived> queryListByPage(Map paramMap);
 	/**
 	 * @author 刘宗峰
 	 * @TODO 查询对象集合

@@ -41,7 +41,6 @@ public class DynamicDataSourceAspect {
             e.printStackTrace();
             throw new MyException("aop动态数据源失败");
         }
-        System.out.println("===========数据源："+dataSource);
         // 切换数据源
         DataSourceContextHolder.setDB(dataSource);
 

@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import rest.mybatis.model.misModel.Usert;
-@Component
-public class UserInfo extends Usert implements UserDetails{
+//@Component
+public class UserInfo  extends Usert implements UserDetails{
 
 	private String username;
 	

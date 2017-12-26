@@ -81,7 +81,7 @@
               <li class="nav-header">商务人员</li>
               <li class="active"><a href="electronicalBillIssue.html">账单期数管理</a></li>
               <li><a href="electronicalBillMonthManage.html">月度账单管理</a></li>
-              <li><a href="electronicalBillMonthSearch.html">查询月度账单</a></li>
+              <li><a href="electronicalBillIssue.html">查询月度账单</a></li>
               <li><a href="electronicalBillDetail.html">月度账单明细</a></li>
               
               <li class="nav-header">对账渠道</li>
@@ -129,7 +129,7 @@
 							<th>期数状态</th>
 							<th>账单状态</th>
 							<th>操作</th>
-							<th><a id="12" href="222"></a></th>
+							<!-- <th><a id="12" href="222"></a></th> -->
 						</tr>
 					</thead>
 					<tbody>
@@ -146,7 +146,7 @@
 						<td>
 							
 							<a v-if="issue.issueState == 0" href="#" v-bind:class="issue.id" @click="delIssueById($event)">删除        |</a>  
-							<a href="electronicalBillMonthSearch.html">账单查询</a>
+							<a v-bind:id="issue.id" v-bind:name="issue.issueName" v-bind:type="issue.billState" href="#" @click=turnToMonthSearch_fn($event)>账单查询</a>
 						</td>
 					</tr>
 					
@@ -295,7 +295,16 @@
       	  			testVue_vm.pageSize = forPage;
       	  			queryListByPage(1);
       	  		},
-      	  		  
+      	  		//跳转至账单查询页面
+      	  		turnToMonthSearch_fn : function(event){
+      	  			//1.取得选中的数据
+      	  			var issueId_u = $(event.target).prop("id");
+      	  			var issueName_u = $(event.target).prop("name");
+      	  			var billState_u = $(event.target).prop("type");
+      	  			issueName_u  = encodeURI(encodeURI(issueName_u + "期"));
+      	  			window.location.href = "electronicalBillMonthSearch.html?issueId="+issueId_u+"&issueName="+issueName_u+"&billState="+billState_u;
+      	  		},
+      	  		//更改期数状态  
       	  		updateIssueState_fn : function(event){
       	  			//1.取得选中的数据
       	  			var issueId_u = $(event.target).prop("id");

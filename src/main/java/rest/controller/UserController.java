@@ -1,6 +1,8 @@
 package rest.controller;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -58,7 +60,41 @@ public class UserController {
 		
 		return authorities;
 	}
-	
+	/**
+	 * @author 刘宗峰
+	 * @TODO 查询当前对账对象，（根据权限）如果是商务人员，则返回空
+	 * @param session
+	 * @return
+	 */
+	@LZFDS("misDS")
+	@RequestMapping("/searchCurrentObj")
+	@ResponseBody
+	public Map<String,String> searchCurrentObj(HttpSession session){
+		
+		SecurityContext context = (SecurityContext)session.getAttribute("SPRING_SECURITY_CONTEXT");
+		User user = (User)context.getAuthentication().getPrincipal();
+		
+		Usert u = usertMapper.selectByComNum(user.getUsername());
+		
+		Collection<GrantedAuthority> authorities = user.getAuthorities();
+		int i =0;
+		for(GrantedAuthority ga : authorities){
+			if(ga.getAuthority().equals("AUTH_URL_ROLE_DUIZHANG_EMP")){
+				i++;
+			}else{
+				
+			}
+		}
+		if(i >0){
+			Map<String,String> m = new HashMap<String,String>();
+			m.put("text", u.getUserName());
+			m.put("value", u.getUserId().toString());
+			return m;
+		}else{
+			return null;
+		}
+		
+	}
 	
 	
 }

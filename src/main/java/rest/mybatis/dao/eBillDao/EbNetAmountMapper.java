@@ -1,6 +1,7 @@
 package rest.mybatis.dao.eBillDao;
 
 import java.util.List;
+import java.util.Map;
 
 import rest.mybatis.model.eBillModel.EbNetAmount;
 /**
@@ -8,8 +9,15 @@ import rest.mybatis.model.eBillModel.EbNetAmount;
  * @author 刘宗峰
  *
  */
-public interface EbNetAmountMapper {
-	
+public interface EbNetAmountMapper extends EleBillMapper{
+	@Override
+	int deleteBatch(List list);
+	/**
+	 * @author 刘宗峰
+	 * @TODO 分页，传参，查询集合
+	 */
+	@Override
+	List<EbNetAmount> queryListByPage(Map paramMap);
 	/**
      * @author 刘宗峰
      * @param list
